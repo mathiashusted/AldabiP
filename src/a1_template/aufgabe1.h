@@ -9,8 +9,6 @@
 
 // additional includes (should you need them), go here
 //  ...
-#include <cstdint>
-#include <map>
 
 
 class Horspool
@@ -61,8 +59,5 @@ protected:
   // your data members (and helper functions, if you need them), go here:
   //  ...
   // 
-
-  std::string pattern;
-  std::map<char, uint32_t> patternMap;
 
 };
