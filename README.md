@@ -1,11 +1,6 @@
 <h1 align="center">AlDaBi Praktikum</h1>
 <p align="center"><strong>Algorithms and Data Structures for Bioinformatics</strong></p>
 
-![GitHub](https://img.shields.io/github/license/mathiashusted/AldabiP?style=flat-square)
-![GitHub Workflow Status](https://img.shields.io/github/workflow/status/mathiashusted/AldabiP/CI?style=flat-square)
-![GitHub last commit](https://img.shields.io/github/last-commit/mathiashusted/AldabiP?style=flat-square)
-![GitHub repo size](https://img.shields.io/github/repo-size/mathiashusted/AldabiP?style=flat-square)
-
 ![header](images/header.png)
 
 
@@ -34,18 +29,25 @@ In the first, we will acquire a theoretical understanding of the algorithms and 
 
 
 ### Topics
-- Exact string matching - [(e.g. Boyer-Moore algorithm)]
-- Theme 2 - [Description]
-- Theme 3 - [Description]
+- Exact string matching - (e.g. Boyer-Moore algorithm)
+- Topic 2 - [Description]
+- Topic 3 - [Description]
 ...
-[More themes will be added as the course progresses]
+
+(More topics will be added as the course progresses)
 
 
 ## Implementations
-Each final assignment corresponding to a theme is placed in a folder named `aufgabe1`, `aufgabe2`, etc., where `aufgabe` means task in German. For instance, for the first theme, you will find the implementation inside the `aufgabe1` folder.
+Each final assignment corresponding to a task is placed in a folder named `aufgabe1`, `aufgabe2`, etc., where `aufgabe` means task in German. For instance, the implementation for the first task will be found under the `aufgabe1` folder.
 
-The real development for each of these assignments takes place under `src/*` directory. For example, the code for the first theme would be under `src/a1_dzima/*` and `src/a1_mathias/*`.
+The real development for each of these assignments takes place under `src/*` directory. For example, the code for the first task would be under `src/a1_dzima/*` and `src/a1_mathias/*`. Additionally, you will also see the templates we were given. All of the tasks are numbered chronologically and will get progressively more complex.
 
+As a general rule, each program fundamentally consists of 3 main files.
+- aufgabeX.h
+- aufgabeX.cpp
+- aufgabeX_main.cpp
+
+Our main work will be done inside the second, where we will implement the functions given to us in the header file by the [instructors](#instructors).
 
 ## Testing
 Each assignment folder contains a test file named `a*_test.cpp.` To run the tests, navigate to the corresponding folder and execute the following command:
@@ -74,15 +76,16 @@ This repository utilizes GitHub Actions for Continuous Integration (CI). The CI 
 - [Mathias Husted](https://github.com/mathiashusted)
 
 
-## Acknowledgements
+## Instructors
 - [Prof. Dr. Knut Reinert](https://www.mi.fu-berlin.de/en/inf/groups/abi/members/Professors/reinert.html)
+- [Dr. Chris Bielow](https://www.mi.fu-berlin.de/en/inf/groups/bsc/members/bielow.html)
 
 
 ## References
 - Algorithms and Data Structures for Bioinformatics
 - Algorithms and Data Structures for Bioinformatics Practical
 - GitHub Actions
-- [DALLE3](https://openai.com/dall-e-3)
+- [DALL-E 3](https://openai.com/dall-e-3)
 
 ## License
 This repository is released under the <a href="LICENSE">GPL v3</a> license. Feel free to tweak it to your own likings.
