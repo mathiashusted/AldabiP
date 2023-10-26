@@ -5,6 +5,7 @@
 // This function will generate a lookup table and store the pattern
 void Horspool::setPattern(const std::string& pat) {
   this->pattern = pat;
+  this->patternMap.clear();
   for (size_t i = 0; i < pat.length(); i++) {
     this->patternMap[pat[i]] = pat.length();
   }
