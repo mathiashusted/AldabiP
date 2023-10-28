@@ -2,3 +2,6 @@
 .DS_Store
 .vscode/*
 src/a1_mathias/aufgabe1
+
+# PyCharm
+.idea
