@@ -48,7 +48,7 @@ std::vector<size_t> Horspool::getHits(const std::string &text) const {
 
   // Initialize variables
   uint32_t textPosition = 0;
-  uint32_t i;
+  int32_t i;
   uint32_t patternLength = this->pattern.length();
   uint32_t textLength = text.length();
   // Reference to pattern for faster access (enabling caching)
