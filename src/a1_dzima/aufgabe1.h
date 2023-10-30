@@ -9,9 +9,6 @@
 
 // additional includes (should you need them), go here
 //  ...
-#include <algorithm>
-#include <cstdint>
-#include <iostream>
 
 class Horspool
 {
@@ -62,6 +59,6 @@ protected:
   //  ...
   // 
   std::string pattern;
-  uint32_t shiftVec[256];
+  std::unordered_map<char, uint32_t> shiftMap;
 
 };
