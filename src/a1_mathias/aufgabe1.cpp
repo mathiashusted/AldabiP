@@ -1,8 +1,7 @@
-
 #include "aufgabe1.h"
 
 uint32_t Horspool::getShift_(const char last_char) const {
-  return (patternMap.find(last_char) != patternMap.end()) ? patternMap.at(last_char) : 0;
+  return (patternMap.find(last_char) != this->patternMap.end()) ? patternMap.at(last_char) : this->pattern.length();
   // Here we first check that the argument isn't out of range in our lookup table.
   // If it is out of range, then we return a default value of 0.
   // This is the behaviour we want because of the following 2 cases:
@@ -13,15 +12,14 @@ uint32_t Horspool::getShift_(const char last_char) const {
 
 // This function will generate a lookup table and store the pattern
 void Horspool::setPattern(const std::string& pat) {
-  this->pattern = pat;
-  this->patternMap.clear();
-  for (size_t i = 0; i < pat.length(); i++) {
-    this->patternMap[pat[i]] = pat.length();
-  }
-  for (size_t j = 0; j < pat.length(); j++) {
-    this->patternMap[pat[j]] = pat.length() - (j+1);
-  }
-
+  pattern = pat;
+  patternMap.clear();
+  uint32_t length = pattern.length();
+  for (size_t i = 0; i < length; i++)
+    patternMap[pattern[i]] = length;
+  for (size_t j = 0; j < (length-1); j++)
+    patternMap[pattern[j]] = length - j - 1;
+  return;
 }
 
 const std::string& Horspool::getPattern() const {
@@ -37,8 +35,7 @@ std::vector<size_t> Horspool::getHits(const std::string& text) const {
   uint32_t shift = 0;
   std::vector<size_t> output{};
   // Here we initialize all variables to avoid compiler complications... (looking at you, macOS🤨)
-
-  while (pos <= (n - m) && !(text.empty()) && !(pattern.empty())) {
+  while (m <= n && pos <= (n - m) && !(text.empty()) && !(pattern.empty())) {
     j = m;
     shift = 0;
 
