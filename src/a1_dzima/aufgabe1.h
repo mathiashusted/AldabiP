@@ -9,7 +9,9 @@
 
 // additional includes (should you need them), go here
 //  ...
-
+#include <algorithm>
+#include <cstdint>
+#include <iostream>
 
 class Horspool
 {
@@ -59,5 +61,7 @@ protected:
   // your data members (and helper functions, if you need them), go here:
   //  ...
   // 
+  std::string pattern;
+  uint32_t shiftVec[256];
 
 };
