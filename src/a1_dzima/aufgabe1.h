@@ -9,6 +9,7 @@
 
 // additional includes (should you need them), go here
 //  ...
+#include <unordered_map>
 
 class Horspool
 {
@@ -59,6 +60,6 @@ protected:
   //  ...
   // 
   std::string pattern;
+  std::uint32_t maxShift;
   std::unordered_map<char, uint32_t> shiftMap;
-
 };

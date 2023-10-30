@@ -10,20 +10,6 @@
 
 #include "aufgabe1.h"
 
-void Horspool::setPattern(const std::string& pat) {
-  this->pattern = pat;
-  shiftMap.clear();
-  uint32_t length = pattern.length();
-  for (size_t i = 0; i < length - 1; i++) {
-    shiftMap[pattern[i]] = length - i - 1;
-  }
-}
-
-const std::string& Horspool::getPattern() const {
-  static const std::string empty;
-  return (this->pattern.empty()) ? empty : this->pattern;
-}
-
 /**
  * @brief Get the Shift object
  * Here we first check that the argument isn't out of range in our lookup table.
@@ -35,45 +21,58 @@ const std::string& Horspool::getPattern() const {
  *      whole text.
 */
 uint32_t Horspool::getShift_(const char last_char) const {
-  return (shiftMap.find(last_char) != this->shiftMap.end()) ? shiftMap.at(last_char) : this->pattern.length();
+  return (shiftMap.find(last_char) != this->shiftMap.end()) ? shiftMap.at(last_char) : this->maxShift;
 }
 
-std::vector<size_t> Horspool::getHits(const std::string& text) const
+
+void Horspool::setPattern(const std::string& pat) {
+  this->pattern = pat;
+  this->maxShift = pattern.length();
+  shiftMap.clear();
+  uint32_t length = pattern.length();
+  for (size_t i = 0; i < length - 1; i++) {
+    shiftMap[pattern[i]] = length - i - 1;
+    if (pattern[i] == '?') {
+      maxShift = length - i - 1;
+    }
+  }
+}
+
+const std::string& Horspool::getPattern() const {
+  static const std::string empty;
+  return (this->pattern.empty()) ? empty : this->pattern;
+}
+
+
+std::vector<size_t> Horspool::getHits(const std::string& text) const 
 {
-    // Check pattern, text correctness
-    if (this->pattern.empty() || text.empty())
-    {
-        return {};
+  if (text.empty() || pattern.empty()) {
+    return {};
+  }
+
+  // Initialize variables
+  uint32_t currentPosition = 0;
+  uint32_t i = 0;
+  uint32_t patternLength = pattern.length();
+  uint32_t textLength = text.length();
+  // Reference to pattern for faster access (enabling caching)
+  const std::string &patternRef = this->pattern;
+  std::vector<size_t> output{};
+
+  while (patternLength <= textLength && currentPosition <= (textLength - patternLength)) {
+    i = patternLength;
+
+    while (i> 0 && (text[currentPosition+i-1] == patternRef[i-1] || patternRef[i-1] == '?' || text[currentPosition+i-1] == '?')) {
+      i--;
     }
+    if (i == 0)
+      output.push_back(currentPosition);
 
-    // Initialize variables
-    uint32_t textPosition = 0;
-    int32_t i;
-    uint32_t patternLength = this->pattern.length();
-    uint32_t textLength = text.length();
-    // Reference to pattern for faster access (enabling caching)
-    const std::string& patternRef = this->pattern;
-    std::vector<size_t> output;
+    // Internal function for test checks
+    alignCheck_(currentPosition);
 
-    while (textPosition <= (textLength - patternLength))
-    {
-        alignCheck_(textPosition);
-        i = patternLength - 1;
-
-        // Check if pattern mathces text
-        while (i > 0 && (text[textPosition + i] == patternRef[i]))// || patternRef[i] == '?' || text[textPosition + i] == '?'))
-        {
-            --i;
-        }
-        // If all characters match, add position to output
-        if ((i == 0) && (text[textPosition + i] == patternRef[i]))
-        {
-            output.push_back(textPosition);
-        }
-
-        // Shift text position
-        textPosition += getShift_(text[textPosition + patternLength - 1]);
-    }
-
-    return output;
+    // Move the pattern to the right
+    currentPosition += getShift_(text[currentPosition+patternLength-1]);
+  }
+  return output;
 }
