@@ -10,7 +10,7 @@
 // additional includes (should you need them), go here
 //  ...
 #include <cstdint>
-#include <map>
+#include <unordered_map>
 
 
 class Horspool
@@ -63,6 +63,6 @@ protected:
   // 
 
   std::string pattern;
-  std::map<char, uint32_t> patternMap;
+  std::unordered_map<char, uint32_t> patternMap;
 
 };
