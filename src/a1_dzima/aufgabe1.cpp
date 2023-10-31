@@ -37,6 +37,12 @@ void Horspool::setPattern(const std::string &pat) {
       maxShift = length - i - 1;
     }
   }
+  // Replace shift for the maxShift if the charakters shift is bigger
+  for (size_t i = 0; i < length - 1; i++) {
+    if (shiftMap[pattern[i]] > maxShift) {
+      shiftMap[pattern[i]] = maxShift;
+    }
+  }
 }
 
 const std::string &Horspool::getPattern() const {
