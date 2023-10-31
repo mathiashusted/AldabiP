@@ -10,6 +10,7 @@
 // additional includes (should you need them), go here
 //  ...
 #include <unordered_map>
+#include <cstdint>
 
 class Horspool
 {
