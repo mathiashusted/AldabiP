@@ -9,6 +9,8 @@
 
 // additional includes (should you need them), go here
 //  ...
+#include <unordered_map>
+#include <cstdint>
 
 
 class Horspool
@@ -59,5 +61,7 @@ protected:
   // your data members (and helper functions, if you need them), go here:
   //  ...
   // 
-
+  std::string pattern;
+  std::uint32_t maxShift;
+  std::unordered_map<char, uint32_t> shiftMap;
 };
