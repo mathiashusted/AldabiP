@@ -17,16 +17,15 @@ int main(int argc, const char* argv[]) {
         std::vector<uint32_t> suffixArray {};
         construct(suffixArray, argv[1]);
         for (size_t i = 0; i < suffixArray.size(); i++)
-            std::cout << i << ": " << suffixArray[i] << "\n";
+            std::cout << suffixArray[i] << "\n";
     }
     else if (argc > 2) {
-
+        //TODO
     }
     else {
         std::cout << "----------USAGE----------\n"
         "Mode 1: aufgabe2_main \"string\" -> Outputs the suffix array of the corresponding string\n"
         "Mode 2: aufgabe2_main \"string 1\" \"string 2\" \"string 3\" ... \"string n\" -> Scans string 1 for string 2 to string n\n\n";
-        // TODO
     }
     
     return 0;
