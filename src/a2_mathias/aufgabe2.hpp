@@ -5,6 +5,7 @@
 
 #include <string>
 #include <vector>
+#include <cstdint> // Oops, had to add this in order for it to compile at all
 
 /// Build suffix array from text.
 /// @param[out] sa A suffix array (sorted). The variable 'sa' is cleared before it's filled and returned.
