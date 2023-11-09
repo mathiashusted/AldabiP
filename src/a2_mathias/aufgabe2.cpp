@@ -4,10 +4,19 @@
 #include <algorithm>
 #include <utility>
 
+struct suffix {
+    uint32_t index;
+    std::string text;
 
+    suffix(const uint32_t & i, const std::string & t) : index(i), text(t) {}
+
+    bool operator<(const suffix & s) {
+        return text < s.text;
+    }
+};
 
 void construct(std::vector<uint32_t>& sa, const std::string& text) {
-    std::vector<std::pair<uint32_t, std::string>> suftab {};
+    std::vector<suffix> suftab {};
     std::string ti;
 
     // Reset our array in case it is not empty to construct it from scratch
@@ -19,16 +28,14 @@ void construct(std::vector<uint32_t>& sa, const std::string& text) {
         for (uint32_t j = 0+i; j < text.length(); j++)
             ti += text[j];
 
-        suftab.push_back(std::make_pair(i, ti));
+        suftab.push_back(suffix(i, ti));
     }
 
     // Sorting our array with a custom lambda expression (as per cppreference.com) whichs sorts by our second pair value (the string part)
-    std::sort(suftab.begin(), suftab.end(), [](const std::pair<uint32_t, std::string> a, const std::pair<uint32_t, std::string> b) {
-        return a.second < b.second;
-    });
+    std::sort(suftab.begin(), suftab.end());
     
     for (size_t i = 0; i < suftab.size(); i++)
-        sa.push_back(suftab[i].first);
+        sa.push_back(suftab[i].index);
 
     return;
 }
