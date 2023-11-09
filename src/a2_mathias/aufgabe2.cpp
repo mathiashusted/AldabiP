@@ -4,6 +4,8 @@
 #include <algorithm>
 #include <utility>
 
+
+// Create a struct to hold our original index, along with the suffix itself
 struct suffix {
     uint32_t index;
     std::string text;
@@ -31,7 +33,6 @@ void construct(std::vector<uint32_t>& sa, const std::string& text) {
         suftab.push_back(suffix(i, ti));
     }
 
-    // Sorting our array with a custom lambda expression (as per cppreference.com) whichs sorts by our second pair value (the string part)
     std::sort(suftab.begin(), suftab.end());
     
     for (size_t i = 0; i < suftab.size(); i++)
