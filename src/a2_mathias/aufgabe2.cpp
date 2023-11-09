@@ -2,7 +2,6 @@
 
 #include <cstdint>
 #include <algorithm>
-#include <utility>
 
 
 // Create a struct to hold our original index, along with the suffix itself
