@@ -15,9 +15,12 @@ int main(int argc, const char* argv[]) {
     // Mode 1:
     if (argc == 2) {
         std::vector<uint32_t> suffixArray {};
+        std::vector<uint32_t> hits {};
         construct(suffixArray, argv[1]);
         for (size_t i = 0; i < suffixArray.size(); i++)
-            std::cout << suffixArray[i] << "\n";
+            std::cout << i << ": " << suffixArray[i] << ": " << suftabText(suffixArray, argv[1], i) << "\n"; // DEBUG
+        //DEBUG
+        find("si", suffixArray, argv[1], hits);
     }
     else if (argc > 2) {
         //TODO
