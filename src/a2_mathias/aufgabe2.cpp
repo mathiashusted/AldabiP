@@ -2,42 +2,15 @@
 
 #include <cstdint>
 #include <algorithm>
-#include <iostream> //DEBUG
+//#include <iostream> //DEBUG
 
-
-// This function offers four functionalities:
-// 1. Compare pattern <= given suffix text (lessEqual = 0)
-// 2. Compare pattern > given suffix text (lessEqual = 1)
-// 3. Compare pattern >= given suffix text (lessEqual = 2)
-// 4. Compare pattern < given suffix text (lessEqual = 3)
-bool patternCompare(const std::string& pattern, const std::string& suffixText, const uint32_t& startingPosition, short comparison = 3) {
-    uint32_t i;
-    for (i = 0;
-    (i < pattern.length())
-    && (startingPosition+i < suffixText.length())
-    && pattern[i] == suffixText[startingPosition+i]; i++) {}
-
-    char patternChar = pattern[i];
-    char suffixChar = suffixText[startingPosition + i];
-
-    std::cout << "COMPARE " << patternChar << " WITH " << suffixChar << "\n";
-
-    switch (comparison) {
-        case 0: return patternChar <= suffixChar;
-        case 1: return patternChar > suffixChar;
-        case 2: return patternChar >= suffixChar;
-        case 3: return patternChar < suffixChar;
-        default: return false;
-    }
-
-}
 
 uint32_t findFirstDeviatingChar(const std::string& pattern, const std::string& suffixText, const uint32_t& startingPosition, bool scanOnlySubstring = false) {
     uint32_t i = 0;
     if (scanOnlySubstring == false)
         for (; i < suffixText.length() && startingPosition+i < suffixText.length() && pattern[i] == suffixText[startingPosition+i]; i++) {}
     else
-        for (; i < pattern.length() && startingPosition+i < suffixText.length() && pattern[i] == suffixText[startingPosition+i]; i++) {}
+        for (; i < pattern.length() && startingPosition+i+pattern.length() < suffixText.length() && pattern[i] == suffixText[startingPosition+i+pattern.length()]; i++) {}
     return i;
 }
 
@@ -76,13 +49,11 @@ void find(const std::string& query, const std::vector<uint32_t>& sa, const std::
     uint32_t lastDiff = findFirstDeviatingChar(query, text, sa[sa.size()-1]);
     uint32_t suffixMax = sa.size()-1;
 
-    if (patternCompare(query, text, sa[0], 0)) {
-    //if (query[firstDiff] <= text[firstDiff+sa[0]]) {
+    if (query[firstDiff] <= text[firstDiff+sa[0]]) {
         lp = 0;
     }
 
-    else if (patternCompare(query, text, sa[sa.size()-1], 1)) {
-    //else if (query[lastDiff] > text[lastDiff+query.length()]) {
+    else if (query[lastDiff] > text[lastDiff+sa[suffixMax]]) {
         lp = suffixMax;
     }
 
@@ -93,9 +64,8 @@ void find(const std::string& query, const std::vector<uint32_t>& sa, const std::
         while (R - L > 1) {
             m = (L + R)/2;
             mDiff = findFirstDeviatingChar(query, text, sa[m]);
-            std::cout << "(L,R) = (" << L << "," << R << ") => M = " << m << "\n";
-            if (patternCompare(query, text, sa[m], 0)) {
-            //if (query[firstDiff] <= text[firstDiff+sa[m]]) {
+            //std::cout << "(L,R) = (" << L << "," << R << ") => M = " << m << "\n";
+            if (query[mDiff] <= text[mDiff+sa[m]]) {
                 R = m;
             }
             else {
@@ -104,24 +74,20 @@ void find(const std::string& query, const std::vector<uint32_t>& sa, const std::
         }
         lp = R;
     }
-    std::cout << "Final value: (L,R) = (" << L << "," << R << ")" << "\n";
-    std::cout << "\n\nLp = " << lp << "\n\n\n";
+    //std::cout << "Final value: (L,R) = (" << L << "," << R << ")" << "\n";
+    //std::cout << "\n\nLp = " << lp << "\n\n\n";
 
 
 
 
 
-
-
-    if (patternCompare(query, text, sa[sa.size()-1], 2)) {
-    //if (query[lastDiff] >= text[lastDiff+suffixMax]) {
-        std::cout << query << " <= T[suftab[0]]\n";
+    if (query[lastDiff] >= text[lastDiff+sa[suffixMax]]) {
+        //std::cout << query << " <= T[suftab[0]]\n";
         rp = sa.size()-1;
     }
 
-    else if (patternCompare(query, text, sa[0], 3)) {
-    //else if (query[firstDiff] < text[firstDiff+sa[0]]) {
-        std::cout << query << " > T[suftab[n]] with value: " << sa[sa.size()-1] << "\n";
+    else if (query[firstDiff] < text[firstDiff+sa[0]]) {
+        //std::cout << query << " > T[suftab[n]] with value: " << sa[sa.size()-1] << "\n";
         rp = 0;
     }
 
@@ -132,23 +98,22 @@ void find(const std::string& query, const std::vector<uint32_t>& sa, const std::
         while (R - L > 1) {
             m = (L + R+1)/2;
             mDiff = findFirstDeviatingChar(query, text, sa[m], true);
-            std::cout << "(L,R) = (" << L << "," << R << ") => M = " << m << "\n";
-            if (patternCompare(query, text.substr(query.length()), sa[m], 3)) {
-            //if (query[mDiff] < text[mDiff+query.length()-1]) {
+            //std::cout << "(L,R) = (" << L << "," << R << ") => M = " << m << "\n";
+            if (query[mDiff] < text[mDiff+sa[m]+query.length()]) {
                 L = m;
-                std::cout << query.substr(0,query.length()) << " < " << text.substr(sa[m], query.length()) << "\n";
-                std::cout << query << " < " << text.substr(sa[m]) << "\n";
+                //std::cout << query.substr(0,query.length()) << " < " << text.substr(sa[m], query.length()) << "\n";
+                //std::cout << query << " < " << text.substr(sa[m]) << "\n";
             }
             else {
                 R = m;
-                std::cout << query.substr(0,query.length()) << " >= " << text.substr(0, query.length()) << "\n";
-                std::cout << query << " >= " << text.substr(sa[m]) << "\n";
+                //std::cout << query.substr(0,query.length()) << " >= " << text.substr(0, query.length()) << "\n";
+                //std::cout << query << " >= " << text.substr(sa[m]) << "\n";
             }
         }
         rp = R-1;
     }
-    std::cout << "Final value: (L,R) = (" << L << "," << R << ")" << "\n";
-    std::cout << "\n\nRp = " << rp << "\n\n\n";
+    //std::cout << "Final value: (L,R) = (" << L << "," << R << ")" << "\n";
+    //std::cout << "\n\nRp = " << rp << "\n\n\n";
 
     hits.clear();
     for (uint32_t i = lp; i <= rp; i++) {
