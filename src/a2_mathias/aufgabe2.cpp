@@ -2,7 +2,7 @@
 
 #include <cstdint>
 #include <algorithm>
-//#include <iostream> //DEBUG
+#include <iostream> //DEBUG
 
 
 uint32_t findFirstDeviatingChar(const std::string& pattern, const std::string& suffixText, const uint32_t& startingPosition, bool scanOnlySubstring = false) {
@@ -10,7 +10,7 @@ uint32_t findFirstDeviatingChar(const std::string& pattern, const std::string& s
     if (scanOnlySubstring == false)
         for (; i < suffixText.length() && startingPosition+i < suffixText.length() && pattern[i] == suffixText[startingPosition+i]; i++) {}
     else
-        for (; i < pattern.length() && startingPosition+i+pattern.length() < suffixText.length() && pattern[i] == suffixText[startingPosition+i+pattern.length()]; i++) {}
+        for (; i < suffixText.length() && startingPosition+i+pattern.length() < suffixText.length() && pattern[i] == suffixText[startingPosition+i+pattern.length()]; i++) {}
     return i;
 }
 
@@ -75,7 +75,7 @@ void find(const std::string& query, const std::vector<uint32_t>& sa, const std::
         lp = R;
     }
     //std::cout << "Final value: (L,R) = (" << L << "," << R << ")" << "\n";
-    //std::cout << "\n\nLp = " << lp << "\n\n\n";
+    std::cout << "\n\nLp = " << lp << "\n\n\n";
 
 
 
@@ -97,23 +97,25 @@ void find(const std::string& query, const std::vector<uint32_t>& sa, const std::
 
         while (R - L > 1) {
             m = (L + R+1)/2;
-            mDiff = findFirstDeviatingChar(query, text, sa[m], true);
-            //std::cout << "(L,R) = (" << L << "," << R << ") => M = " << m << "\n";
-            if (query[mDiff] < text[mDiff+sa[m]+query.length()]) {
-                L = m;
+            mDiff = findFirstDeviatingChar(query, text, sa[m]);
+            std::cout << "(L,R) = (" << L << "," << R << ") => M = " << m << "\n";
+            //if (query[mDiff] < text[mDiff+sa[m]]) {
+            if (query < text.substr(sa[m], query.length())) {
+                //std::cout << query << " < " << text.substr(sa[m], query.length()) << "\n";
+                R = m;
                 //std::cout << query.substr(0,query.length()) << " < " << text.substr(sa[m], query.length()) << "\n";
                 //std::cout << query << " < " << text.substr(sa[m]) << "\n";
             }
             else {
-                R = m;
+                L = m;
                 //std::cout << query.substr(0,query.length()) << " >= " << text.substr(0, query.length()) << "\n";
                 //std::cout << query << " >= " << text.substr(sa[m]) << "\n";
             }
         }
-        rp = R-1;
+        rp = L;
     }
     //std::cout << "Final value: (L,R) = (" << L << "," << R << ")" << "\n";
-    //std::cout << "\n\nRp = " << rp << "\n\n\n";
+    std::cout << "\n\nRp = " << rp << "\n\n\n";
 
     hits.clear();
     for (uint32_t i = lp; i <= rp; i++) {
