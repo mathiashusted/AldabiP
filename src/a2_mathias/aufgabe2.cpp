@@ -106,23 +106,23 @@ void find(const std::string& query, const std::vector<uint32_t>& sa, const std::
     }
 
     else {
-        L = 0;
+        L = lp;
         R = sa.size()-1;
 
         while (R - L > 1) {
-            m = (L + R)/2;
+            m = (L + R+1)/2;
             std::cout << "(L,R) = (" << L << "," << R << ") => M = " << m << "\n";
-            //if (patternCompare(query, sa, text, sa[m], 2)) {
-            if (!(std::lexicographical_compare(query.begin(), query.end(), text.begin()+sa[m], text.end()))) {
+            if (patternCompare(query, sa, text, sa[m], 3)) {
+            //if ((std::lexicographical_compare(query.begin(), query.end(), text.begin()+sa[m], text.end()))) {
                 L = m;
-                std::cout << query << ">= " << text.substr(sa[m]) << "\n";
+                std::cout << query << " < " << text.substr(sa[m]) << "\n";
             }
             else {
                 R = m;
-                std::cout << query << "< " << text.substr(sa[m]) << "\n";
+                std::cout << query << " >= " << text.substr(sa[m]) << "\n";
             }
         }
-        rp = L;
+        rp = R;
     }
     std::cout << "Final value: (L,R) = (" << L << "," << R << ")" << "\n";
     std::cout << "\n\nRp = " << rp << "\n\n\n";
