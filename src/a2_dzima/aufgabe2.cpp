@@ -60,13 +60,14 @@ void find(const std::string& query, const std::vector<uint32_t>& suffixArray, co
         startBorder = suffixArray.size();
     }
     else {
+        std::cout << "Left border:" << std::endl;
         // The query is contained in the text
         while (rightBorder - leftBorder > 1) {
             // middlePosition = (leftBorder + rightBorder) / 2;
             // Round up
             middlePosition = (leftBorder + rightBorder + 1) / 2;
             // Debug
-            // std::cout << "Left, middle, right: "  << leftBorder << " " << middlePosition << " " << rightBorder << std::endl;
+            std::cout << "Left, middle, right: "  << leftBorder << " " << middlePosition << " " << rightBorder << std::endl;
             if (query <= text.substr(suffixArray[middlePosition])) {
                 rightBorder = middlePosition;
             }
@@ -77,7 +78,7 @@ void find(const std::string& query, const std::vector<uint32_t>& suffixArray, co
         startBorder = rightBorder;
     }
 
-    // std::cout << std::endl;
+    std::cout << std::endl;
 
     // MLR: Binary search for the end border of the hits
     leftBorder = startBorder;
@@ -94,11 +95,12 @@ void find(const std::string& query, const std::vector<uint32_t>& suffixArray, co
         endBorder = suffixArray.size();
     }
     else {
+        std::cout << "Left border:" << std::endl;
         // The query is contained in the text
         while (rightBorder - leftBorder > 1) {
             middlePosition = (leftBorder + rightBorder + 1) / 2;
             // Debug
-            // std::cout << "Left, middle, right: "  << leftBorder << " " << middlePosition << " " << rightBorder << std::endl;
+            std::cout << "Left, middle, right: "  << leftBorder << " " << middlePosition << " " << rightBorder << std::endl;
             if (query < text.substr(suffixArray[middlePosition])) {
                 rightBorder = middlePosition;
             }
