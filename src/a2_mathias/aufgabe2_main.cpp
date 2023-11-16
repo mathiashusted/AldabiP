@@ -18,6 +18,7 @@ int main(int argc, const char* argv[]) {
         std::vector<uint32_t> hits {};
         construct(suffixArray, argv[1]);
         for (size_t i = 0; i < suffixArray.size(); i++)
+            //std::cout << i << "\n";
             std::cout << i << ": " << suffixArray[i] << ": " << suftabText(suffixArray, argv[1], i) << "\n"; // DEBUG
         //DEBUG
         find("si", suffixArray, argv[1], hits);
