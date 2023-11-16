@@ -13,15 +13,19 @@ std::string suftabText(const std::vector<uint32_t>& sa, const std::string& text,
 
 int main(int argc, const char* argv[]) {
     // Mode 1:
-    if (argc == 2) {
+    //if (argv == 2) {
+    if (argc >= 3) {
         std::vector<uint32_t> suffixArray {};
         std::vector<uint32_t> hits {};
         construct(suffixArray, argv[1]);
         for (size_t i = 0; i < suffixArray.size(); i++)
-            //std::cout << i << "\n";
+            //std::cout << suffixArray[i] << "\n";
             std::cout << i << ": " << suffixArray[i] << ": " << suftabText(suffixArray, argv[1], i) << "\n"; // DEBUG
         //DEBUG
-        find("si", suffixArray, argv[1], hits);
+        find(argv[2], suffixArray, argv[1], hits);
+        std::cout << "\nHITS:\n";
+        for (size_t i = 0; i < hits.size(); i++)
+            std::cout << hits[i] << "\n";
     }
     else if (argc > 2) {
         //TODO
