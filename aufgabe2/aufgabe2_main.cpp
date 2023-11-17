@@ -20,17 +20,8 @@ int main(int argc, const char* argv[]) {
         for (size_t i = 0; i < suffixArray.size(); i++)
             std::cout << suffixArray[i] << "\n";
             // std::cout << suffixArray[i] << " " << suftabText(suffixArray, argv[1], suffixArray[i]) << "\n"; // DEBUG
-        //DEBUG
-        // find("si", suffixArray, argv[1], hits);
-        std::string text;
-        std::string query("hello");
-        
-        construct(suffixArray, text);
-        hits = { 111 };
-        find(query, suffixArray, text, hits);
-        bool res = (hits.empty());
-        std::cout << "Result: " << res << std::endl;
     }
+    
     else if (argc > 2) {
         // Costruct suffix array
         std::vector<uint32_t> suffixArray {};

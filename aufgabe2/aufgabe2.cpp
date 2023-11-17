@@ -2,7 +2,8 @@
 
 #include <cstdint>
 #include <algorithm>
-#include <iostream> //DEBUG
+// #include <iostream> //DEBUG
+
 
 uint32_t calculateMLR(const std::string& firstString, const std::string& secondString) {
     /**
@@ -31,7 +32,12 @@ uint32_t calculateMLR(const std::string& firstString, const std::string& secondS
 }
 
 void construct(std::vector<uint32_t>& sa, const std::string& text) {
-
+    /**
+     * @brief Constructs the suffix array of a given text.
+     * 
+     * @param sa The suffix array to be constructed.
+     * @param text The text to be used.
+    */
     uint32_t len = text.length();
     sa.resize(len);
 
@@ -44,6 +50,15 @@ void construct(std::vector<uint32_t>& sa, const std::string& text) {
 }
 
 void find(const std::string& query, const std::vector<uint32_t>& sa, const std::string& text, std::vector<uint32_t>& hits) {
+    /**
+     * @brief Finds all occurences of a given query in a given text.
+     * 
+     * @param query The query to be searched for.
+     * @param suffixArray The suffix array to be used for lookup.
+     * @param text The text to be searched in.
+    */
+
+   // Clear the hits vector and check if the query&text are valid
     hits.clear();
     if (query.length() > text.length()) return;
 
@@ -55,6 +70,7 @@ void find(const std::string& query, const std::vector<uint32_t>& sa, const std::
     uint32_t mlr = 0;
     uint32_t suffixMax = sa.size()-1;
 
+    // Search for the leftmost index
     if (query <= text.substr(sa[0]))
         lp = 0;
 
@@ -68,26 +84,20 @@ void find(const std::string& query, const std::vector<uint32_t>& sa, const std::
         while (R - L > 1) {
             mlr = calculateMLR(text.substr(sa[L]), text.substr(sa[R]));
             M = (L + R)/2;
-            //std::cout << "(L,R) = (" << L << "," << R << ") => M = " << M << "\n";
-            std::cout << "mlr = " << mlr << "\n";
-            // if (query.substr(mlr) <= text.substr(sa[M + mlr]))
-            if (query <= text.substr(sa[M]))
+            if (query.substr(mlr) <= text.substr(sa[M] + mlr))
                 R = M;
             else
                 L = M;
         }
         lp = R;
     }
-    // std::cout << "Final value: (L,R) = (" << L << "," << R << ")" << "\n";
-    // std::cout << "\n\nLp = " << lp << "\n";
 
+    // Search for the rightmost index
     if (query >= text.substr(sa[suffixMax], query.length())) {
-        //std::cout << "query >= text.sub...\n";
         rp = suffixMax+1;
     }
 
     else if (query < text.substr(sa[0], query.length())) {
-        //std::cout << "query >= text.sub...\n";
         rp = 0;
     }
 
@@ -96,19 +106,17 @@ void find(const std::string& query, const std::vector<uint32_t>& sa, const std::
         R = sa.size()-1;
 
         while (R - L > 1) {
+            mlr = calculateMLR(text.substr(sa[L]), text.substr(sa[R]));
             M = (L + R+1)/2;
-            //std::cout << "(L,R) = (" << L << "," << R << ") => M = " << M << "\n";
-            if (query < text.substr(sa[M], query.length()))
+            if (query.substr(mlr) < text.substr(sa[M] + mlr, query.length()))
                 R = M;
             else
                 L = M;
         }
         rp = L;
     }
-    // std::cout << "Final value: (L,R) = (" << L << "," << R << ")" << "\n";
-    // std::cout << "Rp = " << rp << "\n";
 
-    hits.clear();
+    // Add all hits to the hits vector
     if (!((rp == lp && lp < text.size() && query != text.substr(sa[lp], query.length())) || query.empty() || text.empty())) {
         for (uint32_t i = lp; i <= rp; i++) {
             if (i < sa.size())

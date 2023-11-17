@@ -171,113 +171,41 @@ void construct(std::vector<uint32_t>& suffixArray, const std::string& text) {
 // }
 
 
-// void find(const std::string& query, const std::vector<uint32_t>& suffixArray, const std::string& text, std::vector<uint32_t>& hits) {
-//     uint32_t L = 0;
-//     uint32_t R = suffixArray.size() - 1;
-//     uint32_t mlr = 0; // Assuming you have a function to calculate this
-//     uint32_t M;
-
-//     // Find the lower bound of the query in the suffix array
-//     while (R - L > 1) {
-//         M = (L + R) / 2;
-//         if (query.compare(0, query.size(), text, suffixArray[M], query.size()) <= 0)
-//             R = M;
-//         else
-//             L = M;
-//     }
-
-//     uint32_t start = (query.compare(0, query.size(), text, suffixArray[L], query.size()) <= 0) ? L : R;
-
-//     // Find the upper bound of the query in the suffix array
-//     L = 0;
-//     R = suffixArray.size() - 1;
-//     while (R - L > 1) {
-//         M = (L + R) / 2;
-//         if (query.compare(0, query.size(), text, suffixArray[M], query.size()) < 0)
-//             R = M;
-//         else
-//             L = M;
-//     }
-
-//     uint32_t end = (query.compare(0, query.size(), text, suffixArray[R], query.size()) < 0) ? L : R;
-
-//     // Populate hits with indices where the query is found
-//     for (uint32_t i = start; i <= end; ++i) {
-//         if (text.compare(suffixArray[i], query.size(), query) == 0) {
-//             hits.push_back(suffixArray[i]);
-//         }
-//     }
-// }
-
-
-void find(const std::string& query, const std::vector<uint32_t>& sa, const std::string& text, std::vector<uint32_t>& hits) {
-    hits.clear();
-    if (query.empty() || sa.empty() || text.empty() || query.length() > text.length())
-        return;
-
-    uint32_t lp = 0;
-    uint32_t rp = 0;
+void find(const std::string& query, const std::vector<uint32_t>& suffixArray, const std::string& text, std::vector<uint32_t>& hits) {
     uint32_t L = 0;
-    uint32_t R = 0;
-    uint32_t M = 0;
-    uint32_t suffixMax = sa.size()-1;
+    uint32_t R = suffixArray.size() - 1;
+    uint32_t mlr = 0; // Assuming you have a function to calculate this
+    uint32_t M;
 
-    if (query <= text.substr(sa[0]))
-        lp = 0;
-
-    else if (query > text.substr(sa[suffixMax]))
-        lp = suffixMax+1;
-
-    else {
-        L = 0;
-        R = suffixMax;
-
-        while (R - L > 1) {
-            M = (L + R)/2;
-            //std::cout << "(L,R) = (" << L << "," << R << ") => M = " << M << "\n";
-            if (query<= text.substr(sa[M]))
-                R = M;
-            else
-                L = M;
-        }
-        lp = R;
-    }
-    std::cout << "Final value: (L,R) = (" << L << "," << R << ")" << "\n";
-    std::cout << "\n\nLp = " << lp << "\n";
-
-    if (query >= text.substr(sa[suffixMax], query.length())) {
-        //std::cout << "query >= text.sub...\n";
-        rp = suffixMax+1;
+    // Find the lower bound of the query in the suffix array
+    while (R - L > 1) {
+        M = (L + R) / 2;
+        if (query.compare(0, query.size(), text, suffixArray[M], query.size()) <= 0)
+            R = M;
+        else
+            L = M;
     }
 
-    else if (query < text.substr(sa[0], query.length())) {
-        //std::cout << "query >= text.sub...\n";
-        rp = 0;
+    uint32_t start = (query.compare(0, query.size(), text, suffixArray[L], query.size()) <= 0) ? L : R;
+
+    // Find the upper bound of the query in the suffix array
+    L = 0;
+    R = suffixArray.size() - 1;
+    while (R - L > 1) {
+        M = (L + R) / 2;
+        if (query.compare(0, query.size(), text, suffixArray[M], query.size()) < 0)
+            R = M;
+        else
+            L = M;
     }
 
-    else {
-        L = lp;
-        R = sa.size()-1;
+    uint32_t end = (query.compare(0, query.size(), text, suffixArray[R], query.size()) < 0) ? L : R;
 
-        while (R - L > 1) {
-            M = (L + R+1)/2;
-            //std::cout << "(L,R) = (" << L << "," << R << ") => M = " << M << "\n";
-            if (query < text.substr(sa[M], query.length()))
-                R = M;
-            else
-                L = M;
-        }
-        rp = L;
-    }
-    std::cout << "Final value: (L,R) = (" << L << "," << R << ")" << "\n";
-    std::cout << "Rp = " << rp << "\n";
-
-    hits.clear();
-    if (!((rp == lp && lp < text.size() && query != text.substr(sa[lp], query.length())) || query.empty() || text.empty())) {
-        for (uint32_t i = lp; i <= rp; i++) {
-            if (i < sa.size())
-                hits.push_back(sa[i]);
+    // Populate hits with indices where the query is found
+    for (uint32_t i = start; i <= end; ++i) {
+        if (text.compare(suffixArray[i], query.size(), query) == 0) {
+            hits.push_back(suffixArray[i]);
         }
     }
-    std::sort(hits.begin(), hits.end());
 }
+

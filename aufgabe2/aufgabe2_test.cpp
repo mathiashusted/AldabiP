@@ -163,7 +163,6 @@ bool test_no_hit()
 // test if the implementation does not use the naive implementation using std::vector<string>
 bool test_speed()
 {
-    return true;
     srand(0);
     std::string big(100000, ' '); // 'large' random text
     for (auto& c : big) c = rand() % 128;
