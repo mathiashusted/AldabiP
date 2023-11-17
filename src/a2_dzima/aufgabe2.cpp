@@ -1,128 +1,283 @@
-#include "aufgabe2.hpp"
 
-#include <iostream>
+
 #include <cstdint>
 #include <algorithm>
-#include <numeric>  // For std::iota
+#include <iostream> //DEBUG
+#include <numeric>
+#include "aufgabe2.hpp"
 
 
 void construct(std::vector<uint32_t>& suffixArray, const std::string& text) {
     /**
-     * @brief Construct the suffix array for a given text.
-     *      The function works in 2 steps:
-     *         1. Initialize the suffix array with positional index of the suffix for 
-     *            each of the suffices of the text.
-     *         2. Sort the suffix array based on the lexicographical order of the suffixes they 
-     *            represent.
+     * @brief Constructs a suffix array from a given text.
      * 
      * @param suffixArray The suffix array to be constructed.
-     * @param text The text to construct the suffix array for.
+     * @param text The text to be used for construction.
     */
-    suffixArray.resize(text.length());
-    std::iota(suffixArray.begin(), suffixArray.end(), 0);
 
-    // Define the lambda function for suffix comparison
-    auto compareSuffixes = [&text](const uint32_t & suffixStartIndex1, const uint32_t & suffixStartIndex2) {
-        return std::lexicographical_compare(
-            text.begin() + suffixStartIndex1, text.end(),
-            text.begin() + suffixStartIndex2, text.end());
-    };
+    // Clearing the suffix array and reserving enough space for the suffixes
+    uint32_t textLen = text.length();
+    suffixArray.resize(textLen);
+    size_t counter = 0;
 
-    // Sort the suffix array based on the lexicographical order of the suffixes they represent
-    std::sort(suffixArray.begin(), suffixArray.end(), compareSuffixes);
+    for (uint32_t i = 0; i < textLen; i++)
+        suffixArray[i] = i;
+
+    /** 
+     * Sorting our array with a custom lambda expression (as per cppreference.com) which sorts by comparing the text 
+     * of two suffixArray entries &text and &counter are captured, so that we can use them for lookup inside of our 
+     * lambda function a and b are automatically taken from suffixArray, which holds values from 1..textLen (our suffix 
+     * start positions) Two entries are compared by their ASCII values and return 1 if the a-suffix is smaller than the 
+     * b-suffix, otherwise 0. 
+     */
+    std::sort(suffixArray.begin(), suffixArray.end(), [&text, &counter](const uint32_t & a, const uint32_t & b) {
+        for (counter = 0; text[a+counter] == text[b+counter];)
+            counter++;
+
+        return (text[a+counter] < text[b+counter]);
+    });
+    return;
 }
 
-void find(const std::string& query, const std::vector<uint32_t>& suffixArray, const std::string& text, std::vector<uint32_t>& hits) {
-    // Clear the hits vector
+// bool checkSubstringMatch(const std::string& query, const std::string& text, const uint32_t& suffixArrayIndex) {
+//     /**
+//      * @brief Checks if a given query matches a substring of a given text at a given index.
+//      * 
+//      * @param query The query to be checked.
+//      * @param text The text to be checked in.
+//      * @param suffixArrayIndex The index of the suffix array to be checked.
+//      * 
+//      * @return True if the query matches the substring, false otherwise.
+//     */
+
+//     // Initial checks
+//     if (query.empty() || text.length() == 0 || suffixArrayIndex > text.length())
+//         return false;
+
+//     // Check if the query matches the substring
+//     for (uint32_t i = 0; i < query.length(); i++) {
+//         if (query[i] != text[suffixArrayIndex+i])
+//             return false;
+//     }
+//     return true;
+// }
+
+// uint32_t calculateMLR(const std::string& firstString, const std::string& secondString) {
+//     /**
+//      * @brief Calculates the MLR of two given strings.
+//      * 
+//      * @param firstString The first string to be compared.
+//      * @param secondString The second string to be compared.
+//      * 
+//      * @return The MLR of the two given strings.
+//     */
+
+//     // Initial checks
+//     if (firstString.empty() || secondString.empty())
+//         return 0;
+
+//     // Calculate the MLR
+//     uint32_t mlr = 0;
+//     uint32_t minStringLength = std::min(firstString.length(), secondString.length());
+//     for (uint32_t i = 0; i < minStringLength; i++) {
+//         if (firstString[i] == secondString[i])
+//             mlr++;
+//         else
+//             break;
+//     }
+//     return mlr;
+// }
+
+// void find(const std::string& query, const std::vector<uint32_t>& suffixArray, const std::string& text, std::vector<uint32_t>& hits) {
+//     /**
+//      * @brief Finds all occurences of a given query in a given text.
+//      * 
+//      * @param query The query to be searched for.
+//      * @param suffixArray The suffix array to be used for lookup.
+//      * @param text The text to be searched in.
+//     */
+
+//    // Debug
+//    // Suffix Array
+//     std::cout << "Suffix Array: \n";
+//     for (uint32_t i = 0; i < suffixArray.size(); i++)
+//         std::cout << i << ": " << suffixArray[i] << ": " << text.substr(suffixArray[i]) << "\n";
+
+    // hits.clear();
+    // if (query.empty() || suffixArray.empty() || text.empty())
+    //     return;
+
+//     uint32_t lp = 0;
+//     uint32_t rp = 0;
+//     uint32_t L = 0;
+//     uint32_t R = 0;
+//     uint32_t M = 0;
+//     uint32_t mlr;
+//     uint32_t suffixMaxIndex = suffixArray.size()-1;
+
+//     // If the query is bigger than the biggest suffix
+//     if (query[0] > text[suffixArray[suffixMaxIndex]]) {
+//         return;
+//     }
+
+//     // If the query is smaller than the smallest suffix
+//     if (query[0] < text[suffixArray[0]])
+//         lp = 0;
+
+//     else {
+//         L = 0;
+//         R = suffixMaxIndex;
+
+//         while (R > L) {
+//             mlr = calculateMLR(text.substr(suffixArray[L]), text.substr(suffixArray[R]));
+//             M = (L + R+1)/2;
+//             std::cout << "(L,R) = (" << L << "," << R << ") => M = " << M << "\n";
+//             std::cout << "mlr = " << mlr << "\n";
+//             if (query.substr(mlr) <= text.substr(suffixArray[M] + mlr))
+//                 R = M;
+//             else
+//                 L = M;
+//         }
+//         lp = R;
+//     }
+//     std::cout << "Final value: (L,R) = (" << L << "," << R << ")" << "\n";
+//     std::cout << "\n\nLp = " << lp << "\n";
+
+//     L = lp;
+//     // R = suffixArray.size()-1;
+//     R = suffixMaxIndex;
+
+//     while (R > L) {
+//         mlr = calculateMLR(text.substr(suffixArray[L]), text.substr(suffixArray[R]));
+//         M = (L + R+1)/2;
+//         std::cout << "(L,R) = (" << L << "," << R << ") => M = " << M << "\n";
+//         std::cout << "mlr = " << mlr << "\n";
+//         if (query < text.substr(suffixArray[M], query.length()))
+//             R = M;
+//         else
+//             L = M;
+//     }
+//     rp = L;
+
+//     //std::cout << "Final value: (L,R) = (" << L << "," << R << ")" << "\n";
+//     // std::cout << "Rp = " << rp << "\n";
+
+//     hits.clear();
+//     for (uint32_t i = lp; i <= rp; i++) {
+//         if (i < suffixArray.size()-1)
+//             hits.push_back(suffixArray[i]);
+//     }
+//     std::sort(hits.begin(), hits.end());
+// }
+
+
+// void find(const std::string& query, const std::vector<uint32_t>& suffixArray, const std::string& text, std::vector<uint32_t>& hits) {
+//     uint32_t L = 0;
+//     uint32_t R = suffixArray.size() - 1;
+//     uint32_t mlr = 0; // Assuming you have a function to calculate this
+//     uint32_t M;
+
+//     // Find the lower bound of the query in the suffix array
+//     while (R - L > 1) {
+//         M = (L + R) / 2;
+//         if (query.compare(0, query.size(), text, suffixArray[M], query.size()) <= 0)
+//             R = M;
+//         else
+//             L = M;
+//     }
+
+//     uint32_t start = (query.compare(0, query.size(), text, suffixArray[L], query.size()) <= 0) ? L : R;
+
+//     // Find the upper bound of the query in the suffix array
+//     L = 0;
+//     R = suffixArray.size() - 1;
+//     while (R - L > 1) {
+//         M = (L + R) / 2;
+//         if (query.compare(0, query.size(), text, suffixArray[M], query.size()) < 0)
+//             R = M;
+//         else
+//             L = M;
+//     }
+
+//     uint32_t end = (query.compare(0, query.size(), text, suffixArray[R], query.size()) < 0) ? L : R;
+
+//     // Populate hits with indices where the query is found
+//     for (uint32_t i = start; i <= end; ++i) {
+//         if (text.compare(suffixArray[i], query.size(), query) == 0) {
+//             hits.push_back(suffixArray[i]);
+//         }
+//     }
+// }
+
+
+void find(const std::string& query, const std::vector<uint32_t>& sa, const std::string& text, std::vector<uint32_t>& hits) {
     hits.clear();
-
-    // Initialize the left and right border of the hits
-    uint32_t startBorder;
-    uint32_t endBorder;
-
-    // If the query is empty, return an empty hits vector
-    if (query.empty()) {
+    if (query.empty() || sa.empty() || text.empty() || query.length() > text.length())
         return;
-    }
 
-    // MLR: Binary search for the start border of the hits
-    uint32_t leftBorder = 0;
-    uint32_t rightBorder = suffixArray.size() - 1;
-    uint32_t middlePosition = 0;
-    if (query < text.substr(suffixArray[0])) {
-        // The query is smaller than the smallest suffix in the suffix array
-        // -> The query is not contained in the text
-        startBorder = 0;
-    }
-    else if (query > text.substr(suffixArray[rightBorder])) {
-        // The query is larger than the largest suffix in the suffix array
-        // -> The query is not contained in the text
-        startBorder = suffixArray.size();
-    }
+    uint32_t lp = 0;
+    uint32_t rp = 0;
+    uint32_t L = 0;
+    uint32_t R = 0;
+    uint32_t M = 0;
+    uint32_t suffixMax = sa.size()-1;
+
+    if (query <= text.substr(sa[0]))
+        lp = 0;
+
+    else if (query > text.substr(sa[suffixMax]))
+        lp = suffixMax+1;
+
     else {
-        std::cout << "Left border:" << std::endl;
-        // The query is contained in the text
-        while (rightBorder - leftBorder > 1) {
-            // middlePosition = (leftBorder + rightBorder) / 2;
-            // Round up
-            middlePosition = (leftBorder + rightBorder + 1) / 2;
-            // Debug
-            std::cout << "Left, middle, right: "  << leftBorder << " " << middlePosition << " " << rightBorder << std::endl;
-            if (query <= text.substr(suffixArray[middlePosition])) {
-                rightBorder = middlePosition;
-            }
-            else {
-                leftBorder = middlePosition;
-            }
+        L = 0;
+        R = suffixMax;
+
+        while (R - L > 1) {
+            M = (L + R)/2;
+            //std::cout << "(L,R) = (" << L << "," << R << ") => M = " << M << "\n";
+            if (query<= text.substr(sa[M]))
+                R = M;
+            else
+                L = M;
         }
-        startBorder = rightBorder;
+        lp = R;
+    }
+    std::cout << "Final value: (L,R) = (" << L << "," << R << ")" << "\n";
+    std::cout << "\n\nLp = " << lp << "\n";
+
+    if (query >= text.substr(sa[suffixMax], query.length())) {
+        //std::cout << "query >= text.sub...\n";
+        rp = suffixMax+1;
     }
 
-    std::cout << std::endl;
+    else if (query < text.substr(sa[0], query.length())) {
+        //std::cout << "query >= text.sub...\n";
+        rp = 0;
+    }
 
-    // MLR: Binary search for the end border of the hits
-    leftBorder = startBorder;
-    rightBorder = suffixArray.size() - 1;
-    middlePosition = 0;
-    if (query < text.substr(suffixArray[0])) {
-        // The query is smaller than the smallest suffix in the suffix array
-        // -> The query is not contained in the text
-        endBorder = 0;
-    }
-    else if (query > text.substr(suffixArray[rightBorder])) {
-        // The query is larger than the largest suffix in the suffix array
-        // -> The query is not contained in the text
-        endBorder = suffixArray.size();
-    }
     else {
-        std::cout << "Left border:" << std::endl;
-        // The query is contained in the text
-        while (rightBorder - leftBorder > 1) {
-            middlePosition = (leftBorder + rightBorder + 1) / 2;
-            // Debug
-            std::cout << "Left, middle, right: "  << leftBorder << " " << middlePosition << " " << rightBorder << std::endl;
-            if (query < text.substr(suffixArray[middlePosition])) {
-                rightBorder = middlePosition;
-            }
-            else {
-                leftBorder = middlePosition;
-            }
+        L = lp;
+        R = sa.size()-1;
+
+        while (R - L > 1) {
+            M = (L + R+1)/2;
+            //std::cout << "(L,R) = (" << L << "," << R << ") => M = " << M << "\n";
+            if (query < text.substr(sa[M], query.length()))
+                R = M;
+            else
+                L = M;
         }
-        endBorder = rightBorder;
+        rp = L;
     }
+    std::cout << "Final value: (L,R) = (" << L << "," << R << ")" << "\n";
+    std::cout << "Rp = " << rp << "\n";
 
-    // Debug
-    // std::cout << "Start border: " << startBorder << std::endl;
-    // std::cout << "End border: " << endBorder << std::endl;
-
-    // Clear the hits vector
     hits.clear();
-    
-    // Add the hits to the hits vector
-    for (uint32_t i = startBorder; i <= endBorder; i++) {
-        hits.push_back(suffixArray[i]);
+    if (!((rp == lp && lp < text.size() && query != text.substr(sa[lp], query.length())) || query.empty() || text.empty())) {
+        for (uint32_t i = lp; i <= rp; i++) {
+            if (i < sa.size())
+                hits.push_back(sa[i]);
+        }
     }
-
-    // Sort the hits vector
     std::sort(hits.begin(), hits.end());
 }
