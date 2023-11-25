@@ -1,15 +1,5 @@
-/**
- * Praktikum Algorithmen und Datenstrukturen
- * WS 2023/2024
- *
- * Aufgabe 3
- * Alignment von Sequenzen
- *
- * Authors: Dzmitry Hramyka, Mathias Husted
- */
-
 #include <iostream>
-#include "Alignment.hpp"
+#include "Alignment_chat.hpp"
 
 int main(int argc, char* argv[]) {
     if (argc != 6) {

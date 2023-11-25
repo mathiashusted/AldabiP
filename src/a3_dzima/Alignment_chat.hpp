@@ -3,8 +3,8 @@
 #include <string>
 
 // additional includes can go here:
-// ...
 #include <vector>
+#include <stdexcept>
 
 class Alignment
 {
@@ -44,58 +44,24 @@ public:
 private:
   // add your private functions and member variables here
   // ...
+    std::string seq_v_;
+    std::string seq_h_;
+    int score_;
+    std::string a1_;
+    std::string gaps_;
+    std::string a2_;
+    int match_;
+    int mismatch_;
+    int gap_;
+    bool local_align_;
+    std::vector<std::vector<int>> matrix_;
+    std::vector<std::vector<int>> traceback_;
 
-  /** Enum for the traceback directions. */
-  enum TracebackDirection { NONE, LEFT, UP, DIAGONAL };
+    enum TracebackDirection { NONE, LEFT, UP, DIAGONAL };
 
-  /** Local variables. */
-  std::string seq_first;
-  std::string seq_second;
-  std::string aligned_seq_first;
-  std::string aligned_seq_second;
-  std::string aligned_gaps;
-  int score;
-  int match_cost;
-  int mismatch_cost;
-  int gap_cost;
-  bool local_align;
-  std::vector<std::vector<int>> matrix;
-  std::vector<std::vector<int>> traceback;
+    void initializeMatrix();
+    void fillMatrix();
+    void constructAlignment();
 
-  /**
-   * @brief Initialize the matrix
-   * 
-   * This function initializes the matrix with the
-   * correct values.
-  */
-  void initializeMatrix();
-
-  /**
-   * @brief Fill the matrix
-   * 
-   * This function fills the matrix with the correct
-   * values by using recursion.
-  */
-  void doRecursion();
-
-  /**
-   * @brief Construct the alignment
-   * 
-   * This function constructs the alignment from the
-   * traceback matrix.
-  */
-  void constructAlignment();
-
-  /**
-   * @brief Get the maximum direction
-   * 
-   * This function returns the maximum direction
-   * from the three given values.
-   * 
-   * @param matchScore The score for a match
-   * @param deleteScore The score for a deletion
-   * @param insertScore The score for an insertion
-   * @return TracebackDirection The maximum direction
-  */
-  TracebackDirection getMaxDirection(int matchScore, int deleteScore, int insertScore) const;
+    TracebackDirection getMaxDirection(int matchScore, int deleteScore, int insertScore) const;
 };
