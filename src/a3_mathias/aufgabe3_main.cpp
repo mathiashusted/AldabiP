@@ -3,8 +3,10 @@
 
 
 int main() {
-  Alignment al("test", "tlst");
+  Alignment al("imissmississippi", "mymissisahippie"); //aufgabe3_main IMISSMISSISSIPPI MYMISSISAHIPPIE 3 -4 -1 letsDoLocal
 
-  al.compute(2,3,4,false);
+  al.compute(3,-4,-6,false);
+  std::string a1, a2, gaps;
+  al.getAlignment(a1, gaps, a2);
   return 0;
 }

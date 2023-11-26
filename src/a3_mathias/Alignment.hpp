@@ -46,12 +46,17 @@ public:
 private:
   // add your private functions and member variables here
   // ...
+    enum class Traceback {
+    NONE,
+    DIAGONAL,
+    HORIZONTAL,
+    VERTICAL,
+  };
   std::string seqv;
   std::string seqh;
-  std::vector<std::vector<long long>> f;
-  std::vector<std::vector<char>> t; // Traceback: Use smallest possible datatype to represent traceback paths
-  // Encoding:  0: <-
-  //            1: Diagonal
-  //            2: |
+  std::vector<std::vector<long>> f;
+  std::vector<std::vector<Traceback>> t;
+  long score = 0;
+  bool computeCalled = false;
 
 };
