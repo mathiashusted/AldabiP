@@ -4,6 +4,8 @@
 
 // additional includes can go here:
 // ...
+#include <cstdint>
+#include <vector>
 
 
 class Alignment
@@ -44,5 +46,12 @@ public:
 private:
   // add your private functions and member variables here
   // ...
+  std::string seqv;
+  std::string seqh;
+  std::vector<std::vector<long long>> f;
+  std::vector<std::vector<char>> t; // Traceback: Use smallest possible datatype to represent traceback paths
+  // Encoding:  0: <-
+  //            1: Diagonal
+  //            2: |
 
 };
