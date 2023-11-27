@@ -46,17 +46,20 @@ public:
 private:
   // add your private functions and member variables here
   // ...
-    enum class Traceback {
+    enum class Traceback : int8_t{
     NONE,
     DIAGONAL,
     HORIZONTAL,
     VERTICAL,
   };
+  //void initiatializeLocalAlignment();
   std::string seqv;
   std::string seqh;
   std::vector<std::vector<long>> f;
   std::vector<std::vector<Traceback>> t;
   long score = 0;
   bool computeCalled = false;
-
+  // bool smithWaterman = false;
+  // uint32_t localStart_i = 0; // Starting point in case of local alignment
+  // uint32_t localStart_j = 0;
 };
