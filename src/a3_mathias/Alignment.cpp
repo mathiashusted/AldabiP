@@ -13,6 +13,7 @@ Alignment::Alignment(const std::string& seq_v, const std::string& seq_h) {
 
 void Alignment::compute(const int match, const int mismatch, const int gap, const bool local_align) {
     computeCalled = true;
+    if (local_align) smithWaterman = true;
     f.clear();
     t.clear();
 
@@ -32,12 +33,24 @@ void Alignment::compute(const int match, const int mismatch, const int gap, cons
     t[0][0] = Traceback::NONE;
 
     for (uint32_t i = 0; i < width; i++) {
-        f[i][0] = static_cast<long>(i) * gap;
-        t[i][0] = Traceback::HORIZONTAL;
+        if (smithWaterman) {
+            f[i][0] = 0;
+            t[i][0] = Traceback::NONE;
+        }
+        else {
+            f[i][0] = static_cast<long>(i) * gap;
+            t[i][0] = Traceback::HORIZONTAL;
+        }
     }
     for (uint32_t j = 0; j < height; j++) {
-        f[0][j] = static_cast<long>(j) * gap;
-        t[0][j] = Traceback::VERTICAL;
+        if (smithWaterman) {
+            f[0][j] = 0;
+            t[0][j] = Traceback::NONE;
+        }
+        else {
+            f[0][j] = static_cast<long>(j) * gap;
+            t[0][j] = Traceback::VERTICAL;
+        }
     }
 
     // Recurrence
@@ -58,7 +71,14 @@ void Alignment::compute(const int match, const int mismatch, const int gap, cons
                 maxScore = f[i-1][j-1] + matchScore;
                 t[i][j] = Traceback::DIAGONAL;
             }
-            
+
+            // Smith-Waterman
+            if (smithWaterman) {
+                if (0 >= maxScore) {
+                    maxScore = 0;
+                    t[i][j] = Traceback::NONE;
+                }
+            }
 
             f[i][j] = maxScore;
 
@@ -67,9 +87,11 @@ void Alignment::compute(const int match, const int mismatch, const int gap, cons
 
     score = f[width-1][height-1];
 
+    updateWatermanScore();
 
 
-    // Debug: Print matrix
+
+    //Debug: Print matrix
     // for (uint32_t j = 0; j < height; j++) {
     //     for (uint32_t i = 0; i < width; i++) {
     //         std::cout << "[";
@@ -88,6 +110,20 @@ int Alignment::getScore() const {
     return score;
 }
 
+void Alignment::updateWatermanScore() {
+    if (smithWaterman && computeCalled) {
+        long maxScore = 0;
+        for (uint32_t i = 0; i < seqh.size()+1; i++) {
+            for (uint32_t j = 0; j < seqv.size()+1; j++) {
+                if (f[i][j] > maxScore) {
+                    maxScore = f[i][j];
+                }
+            }
+        }
+        score = maxScore;
+    }
+}
+
 
 void Alignment::getAlignment(std::string& a1, std::string& gaps, std::string& a2) const {
     if (!computeCalled) throw(std::runtime_error("Compute hasn't been called!"));
@@ -97,8 +133,19 @@ void Alignment::getAlignment(std::string& a1, std::string& gaps, std::string& a2
     gaps = "";
     uint32_t i = seqh.size();
     uint32_t j = seqv.size();
+    if (smithWaterman) {
+        long maxScore = 0;
+        for (uint32_t a = 0; a < seqh.size()+1; a++) {
+            for (uint32_t b = 0; b < seqv.size()+1; b++) {
+                if (f[a][b] > maxScore) {
+                    maxScore = f[i][j];
+                    i = a; j = b;
+                }
+            }
+        }
+    }
 
-    while (!(i == 0 && j == 0)) {
+    while (!(i == 0 && j == 0) && (t[i][j] != Traceback::NONE)) {
         if (t[i][j] == Traceback::DIAGONAL) {
             a1 += seqv[j-1];
             a2 += seqh[i-1];
@@ -123,5 +170,5 @@ void Alignment::getAlignment(std::string& a1, std::string& gaps, std::string& a2
     std::reverse(gaps.begin(), gaps.end());
     std::reverse(a2.begin(), a2.end());
 
-    //std::cout << a1 << "\n" << gaps << "\n" << a2 << "\n";
+    std::cout << a1 << "\n" << gaps << "\n" << a2 << "\n";
 }
