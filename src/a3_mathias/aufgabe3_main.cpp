@@ -3,7 +3,7 @@
 
 
 int main() {
-  Alignment al("imissmississippi", "mymissisahippie"); //aufgabe3_main IMISSMISSISSIPPI MYMISSISAHIPPIE 3 -4 -1 letsDoLocal
+  Alignment al("IMISSMISSISSIPPI", "MYMISSISAHIPPIE"); //aufgabe3_main IMISSMISSISSIPPI MYMISSISAHIPPIE 3 -4 -1 letsDoLocal
 
   al.compute(3,-4,-6,false);
   std::string a1, a2, gaps;
