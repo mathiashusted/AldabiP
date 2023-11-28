@@ -46,7 +46,7 @@ private:
   // ...
 
   /** Enum for the traceback directions. */
-  enum TracebackDirection { NONE, LEFT, UP, DIAGONAL };
+  enum TracebackDirection: int8_t { NONE, LEFT, UP, DIAGONAL };
 
   /** Local variables. */
   std::string seq_first;

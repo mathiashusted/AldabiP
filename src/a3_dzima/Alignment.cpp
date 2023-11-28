@@ -57,6 +57,9 @@ void Alignment::compute(const int match, const int mismatch, const int gap, bool
  * @return int The score of the alignment
  */
 int Alignment::getScore() const {
+    if (!this->matrix.size()) {
+        throw std::runtime_error("Alignment has not been computed");
+    }
     return this->score;
 }
 
@@ -70,6 +73,9 @@ int Alignment::getScore() const {
  * @param a2 The second sequence
  */
 void Alignment::getAlignment(std::string &a1, std::string &gaps, std::string &a2) const {
+    if (!this->matrix.size()) {
+        throw std::runtime_error("Alignment has not been computed");
+    }
     a1 = this->aligned_seq_first;
     gaps = this->aligned_gaps;
     a2 = this->aligned_seq_second;
