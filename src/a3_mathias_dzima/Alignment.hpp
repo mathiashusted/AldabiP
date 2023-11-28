@@ -6,6 +6,11 @@
 // ...
 #include <cstdint>
 #include <vector>
+#include <utility>
+#include <stdexcept>
+#include <algorithm>
+#include <iostream>
+#include <iomanip>
 
 
 class Alignment
@@ -54,9 +59,9 @@ private:
   };
   std::string seqv;
   std::string seqh;
-  std::vector<std::vector<long>> f;
+  std::vector<std::vector<int>> f;
   std::vector<std::vector<Traceback>> t;
-  long score = 0;
+  int score = 0;
   uint32_t localStartI = 0;
   uint32_t localStartJ = 0;
   bool computeCalled = false;

@@ -37,10 +37,6 @@ void Alignment::compute(const int match, const int mismatch, const int gap, bool
     this->mismatch_cost = mismatch;
     this->gap_cost = gap;
     this->local_align = local_align;
-
-    // // Clear the matrix and traceback
-    // this->matrix.clear();
-    // this->traceback.clear();
     
     initializeMatrix();
     doRecursion();
@@ -97,13 +93,24 @@ void Alignment::initializeMatrix() {
     this->traceback.resize(this->seq_first.size() + 1, std::vector<int>(this->seq_second.size() + 1, NONE));
 
     // Initialize the first row and column
-    for (size_t i = 0; i <= this->seq_first.size(); ++i) {
-        this->matrix[i][0] = i * this->gap_cost;
-        this->traceback[i][0] = UP;
-    }
-    for (size_t j = 0; j <= this->seq_second.size(); ++j) {
-        this->matrix[0][j] = j * this->gap_cost;
-        this->traceback[0][j] = LEFT;
+    if (this->local_align) {
+        for (size_t i = 0; i <= this->seq_first.size(); ++i) {
+            this->matrix[i][0] = 0;
+            this->traceback[i][0] = NONE;
+        }
+        for (size_t j = 0; j <= this->seq_second.size(); ++j) {
+            this->matrix[0][j] = 0;
+            this->traceback[0][j] = NONE;
+        }
+    } else {
+        for (size_t i = 0; i <= this->seq_first.size(); ++i) {
+            this->matrix[i][0] = i * this->gap_cost;
+            this->traceback[i][0] = UP;
+        }
+        for (size_t j = 0; j <= this->seq_second.size(); ++j) {
+            this->matrix[0][j] = j * this->gap_cost;
+            this->traceback[0][j] = LEFT;
+        }
     }
 }
 
@@ -114,22 +121,51 @@ void Alignment::initializeMatrix() {
  * values.
  */
 void Alignment::doRecursion() {
-    for (size_t i = 1; i <= this->seq_first.size(); ++i) {
-        for (size_t j = 1; j <= this->seq_second.size(); ++j) {
-            int diagonalScore = this->matrix[i - 1][j - 1] + 
-                    (this->seq_first[i - 1] == this->seq_second[j - 1] 
-                        ? this->match_cost 
-                        : this->mismatch_cost);
-            int verticalScore = this->matrix[i - 1][j] + this->gap_cost;
-            int horizontalScore = this->matrix[i][j - 1] + this->gap_cost;
+    if (this->local_align) {
+        int maxScore = 0;
+        size_t maxI = 0;
+        size_t maxJ = 0;
+        for (size_t i = 1; i <= this->seq_first.size(); ++i) {
+            for (size_t j = 1; j <= this->seq_second.size(); ++j) {
+                int diagonalScore = this->matrix[i - 1][j - 1] + 
+                        (this->seq_first[i - 1] == this->seq_second[j - 1] 
+                            ? this->match_cost 
+                            : this->mismatch_cost);
+                int verticalScore = this->matrix[i - 1][j] + this->gap_cost;
+                int horizontalScore = this->matrix[i][j - 1] + this->gap_cost;
 
-            TracebackDirection trace = getMaxDirection(diagonalScore, verticalScore, horizontalScore);
-            this->matrix[i][j] = std::max({diagonalScore, verticalScore, horizontalScore}); // ?? Should we add 0?
-            this->traceback[i][j] = trace;
+                TracebackDirection trace = getMaxDirection(diagonalScore, verticalScore, horizontalScore);
+                int maxScore = std::max({diagonalScore, verticalScore, horizontalScore, 0});
+                this->matrix[i][j] = maxScore;
+                this->traceback[i][j] = (maxScore == 0) ? NONE : trace;
+
+                if (this->matrix[i][j] > maxScore) {
+                    maxScore = this->matrix[i][j];
+                    maxI = i;
+                    maxJ = j;
+                }
+            }
         }
-    }
+        this->score = maxScore;
+        this->maxI = maxI;
+        this->maxJ = maxJ;
+    } else {
+        for (size_t i = 1; i <= this->seq_first.size(); ++i) {
+            for (size_t j = 1; j <= this->seq_second.size(); ++j) {
+                int diagonalScore = this->matrix[i - 1][j - 1] + 
+                        (this->seq_first[i - 1] == this->seq_second[j - 1] 
+                            ? this->match_cost 
+                            : this->mismatch_cost);
+                int verticalScore = this->matrix[i - 1][j] + this->gap_cost;
+                int horizontalScore = this->matrix[i][j - 1] + this->gap_cost;
 
-    this->score = this->matrix[this->seq_first.size()][this->seq_second.size()];
+                TracebackDirection trace = getMaxDirection(diagonalScore, verticalScore, horizontalScore);
+                this->matrix[i][j] = std::max({diagonalScore, verticalScore, horizontalScore}); // ?? Should we add 0?
+                this->traceback[i][j] = trace;
+            }
+        }
+        this->score = this->matrix[this->seq_first.size()][this->seq_second.size()];
+    }
 }
 
 /**

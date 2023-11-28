@@ -55,6 +55,8 @@ private:
   std::string aligned_seq_second;
   std::string aligned_gaps;
   int score;
+  int maxI;
+  int maxJ;
   int match_cost;
   int mismatch_cost;
   int gap_cost;
