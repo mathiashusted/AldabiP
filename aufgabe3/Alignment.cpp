@@ -65,10 +65,10 @@ void Alignment::compute(const int match, const int mismatch, const int gap, cons
                 f[i][j] = maxScore;
 
                 // Update traceback
-                if (maxScore == scoreUp) {
-                    t[i][j] = Traceback::HORIZONTAL;
-                } else if (maxScore == scoreLeft) {
+                if (maxScore == scoreLeft) {
                     t[i][j] = Traceback::VERTICAL;
+                } else if (maxScore == scoreUp) {
+                    t[i][j] = Traceback::HORIZONTAL;
                 } else if (maxScore == scoreDiagonal) {
                     t[i][j] = Traceback::DIAGONAL;
                 } else {
