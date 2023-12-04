@@ -50,7 +50,7 @@ void Alignment::compute(const int match, const int mismatch, const int gap, cons
 
     // Recurrence
 
-    if (local_align) {
+    if (smithWaterman) {
         int globalMaxScore = 0;
 
         for (uint32_t i = 1; i < width; i++) {
@@ -61,16 +61,16 @@ void Alignment::compute(const int match, const int mismatch, const int gap, cons
                 int scoreUp = f[i-1][j] + gap;
                 int scoreLeft = f[i][j-1] + gap;
 
-                maxScore = std::max({0, scoreDiagonal, scoreUp, scoreLeft}); // Combine scoreZero into this line
+                maxScore = std::max({0, scoreDiagonal, scoreUp, scoreLeft});
                 f[i][j] = maxScore;
 
                 // Update traceback
-                if (maxScore == scoreDiagonal) {
-                    t[i][j] = Traceback::DIAGONAL;
-                } else if (maxScore == scoreUp) {
+                if (maxScore == scoreUp) {
                     t[i][j] = Traceback::HORIZONTAL;
                 } else if (maxScore == scoreLeft) {
                     t[i][j] = Traceback::VERTICAL;
+                } else if (maxScore == scoreDiagonal) {
+                    t[i][j] = Traceback::DIAGONAL;
                 } else {
                     t[i][j] = Traceback::NONE;
                 }
@@ -100,14 +100,6 @@ void Alignment::compute(const int match, const int mismatch, const int gap, cons
                 if (f[i-1][j-1] + matchScore >= maxScore) {
                     maxScore = f[i-1][j-1] + matchScore;
                     t[i][j] = Traceback::DIAGONAL;
-                }
-
-                // Smith-Waterman
-                if (smithWaterman) {
-                    if (0 >= maxScore) {
-                        maxScore = 0;
-                        t[i][j] = Traceback::NONE;
-                    }
                 }
 
                 f[i][j] = maxScore;
