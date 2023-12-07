@@ -8,7 +8,7 @@
 #include "a4_util.h"
 
 // ... more includes here...
-
+#include <algorithm>
 
 /**
    Neighborhood Result data for a single infix
