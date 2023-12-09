@@ -7,10 +7,13 @@
 # Allow Makefile
 !Makefile
 
+# Allow blosum62 and pam120 matrices from aufgabe4
+!blosum62
+!pam120
+
 # DS_Store
 .DS_Store
 .vscode/*
-src/a1_mathias/aufgabe1
 
 # PyCharm
 .idea

@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 //#include <omp.h> // not needed here, but in .cpp
-
+#include <array>
 
 #include "a4_util.h"
 
@@ -58,6 +58,25 @@ class BLAST_Neighborhood
   
   private:
   // your private member _functions_ go here <> (if needed)
-  // hint: private member _variables_ are probably not required 
-  
+  // hint: private member _variables_ are probably not required
+
+    /** Definition of all Aminoacids. */
+    std::array<char, 20> aminoAcids = {'A', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'V', 'W', 'Y'};
+
+    /**
+     * @brief Helper function to recursively generate words
+     * 
+     * @param words
+     * @param currentWord
+     * @param wordSize
+    */
+    void generateWordsRecursively(std::vector<std::string>& words, std::string currentWord, int wordSize);
+
+    /**
+     * @brief Main function to generate all words
+     * 
+     * @param wordSize
+     * @return std::vector<std::string>
+    */
+    std::vector<std::string> generateAllWords(int wordSize);
 };
