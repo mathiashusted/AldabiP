@@ -29,9 +29,10 @@ In the first, we will acquire a theoretical understanding of the algorithms and 
 
 
 ### Topics
-- Exact string matching - (e.g. Boyer-Moore algorithm)
-- Topic 2 - [Description]
-- Topic 3 - [Description]
+- Boyer-Moore-Horspool algorithm (including wildcard capability)
+- Suffix arrays
+- Needleman-Wunsch algorithm (+ Smith-Waterman)
+- BLAST (Partially)
 ...
 
 (More topics will be added as the course progresses)
