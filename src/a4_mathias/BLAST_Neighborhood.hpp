@@ -8,6 +8,8 @@
 #include "a4_util.h"
 
 // ... more includes here...
+#include <iostream> // DEBUG
+#include <stdexcept>
 
 
 /**
@@ -57,7 +59,12 @@ class BLAST_Neighborhood
 
   
   private:
-  // your private member _functions_ go here <> (if needed)
-  // hint: private member _variables_ are probably not required 
-  
+    // your private member _functions_ go here <> (if needed)
+    // hint: private member _variables_ are probably not required 
+    std::vector<std::string> words;
+    std::vector<char> amino_acids = {'A', 'R', 'N', 'D', 'C', 'Q', 'E', 'G', 'H', 'I', 'L', 'K', 'M', 'F', 'P', 'S', 'T', 'W', 'Y', 'V'};
+
+    void generateWords(const std::string& query, int word_size, std::vector<std::string>& output);
+
+    void generateAllKMers(int k, std::string current, std::vector<std::string>& output);
 };
