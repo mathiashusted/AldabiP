@@ -1,5 +1,6 @@
 #include "BLAST_Neighborhood.hpp"
 #include <omp.h>
+#include <algorithm>
 
 
 void BLAST_Neighborhood::generateWords(const std::string& query, int word_size, std::vector<std::string>& output) {
@@ -22,7 +23,6 @@ void BLAST_Neighborhood::generateAllKMers(int k, std::string current, std::vecto
 std::vector<NHResult> BLAST_Neighborhood::generateNeighborhood(const std::string& query,
                                                             const ScoreMatrix& matrix, const int word_size,
                                                             const int score_threshold, const int threads) {
-
     if (query.size() < static_cast<unsigned>(word_size)) return {};
     if (word_size < 1) throw std::runtime_error("Wortgröße muss >= 1 sein!\n");
     std::vector<std::string> words;
@@ -34,20 +34,20 @@ std::vector<NHResult> BLAST_Neighborhood::generateNeighborhood(const std::string
     std::vector<std::string> kMers {};
     generateAllKMers(word_size, "", kMers);
 
-    for (size_t i = 0; i < words.size(); i++) {
-        std::string infix = words[i];
+    for (const auto& word : words) {
+        std::string infix = word;
         std::vector<std::pair <std::string, int>> neighbors {};
-        for (size_t j = 0; j < kMers.size(); j++) {
+        for (const auto& kMer : kMers) {
             int score = 0;
             for (int x = 0; x < word_size; x++) {
-                score += matrix.score(words[i][x], kMers[j][x]);
+                score += matrix.score(word[x], kMer[x]);
             }
             if (score >= score_threshold) {
-                neighbors.push_back(std::make_pair(kMers[j], score));
+                neighbors.push_back(std::make_pair(kMer, score));
             }
         }
+        std::sort(neighbors.begin(), neighbors.end());
         output.push_back({infix, neighbors});
     }
-
     return output;
 }
