@@ -3,7 +3,7 @@
 #include <vector>
 #include <string>
 // your includes here ... (should not be needed though)
-
+#include <cstdint>
 
 /**
    The Q-Gram-Index implementation using Counting Sort for SA Construction
@@ -84,7 +84,17 @@ public:
 
 private:
    // YOUR PRIVATE MEMBER FUNCTIONS and VARIABLES HERE
+  // std::string unhash(const std::string& hashed) const;
 
+  const std::string& pattern;
+  const uint8_t q_length;
+  const uint8_t alphabet_length = 4; // Our alphabet will always consist of {A, C, G, T}
+  const uint8_t bit_shift_value = 2; // Valid for as long as there exists a k, so that 2^k = alphabet_length
+
+  size_t pattern_length;
+  // uint32_t bitmap = 0;
+
+  std::vector<int> dir;
 
 };
 
