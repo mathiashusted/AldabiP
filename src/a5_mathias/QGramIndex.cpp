@@ -33,13 +33,38 @@ QGramIndex::QGramIndex(const std::string& text, const uint8_t q) : pattern(text)
     // Initialize the q-gram
     // Start by sorting using counting sort
     // 1. Initializiation phase
-    for (uint16_t i = 0; i < std::pow(alphabet_length, q_length); i++)
+
+
+    for (uint16_t i = 0; i < std::pow(alphabet_length, q_length); i++) {
         dir.push_back(0);
+    }
 
     // 2. Fetch occurences
-    for (size_t i = 0; i < pattern_length - q_length; i++) {
+    for (size_t i = 0; i < pattern_length - q_length+1; i++) {
         // j = hash of the q-gram at index i
-        uint32_t j = hash(pattern.substr(i, i+q_length-1));
+        uint32_t j = hash(pattern.substr(i, q_length));
+        // std::cout << "Hash of " << pattern.substr(i, q_length) << ": " << j << "\n";
+        dir[j]++;
+        // std::cout << pattern.substr(i, q_length) << ": " << dir[i] << "\n";
+    }
+
+    // 3. Create cumulative sum
+    for (size_t i = 1; i < dir.size(); i++) {
+        dir[i] += dir[i-1];
+        std::cout << "dir[" << i << "]: " << dir[i] << "\n";
+    }
+
+    // 3.5 Initialize suffix array
+    // The cumulated sum from dir (last position in dir) is the size of our suffix array
+    for (size_t i = 0; i < dir[dir.size()-1]; i++) {
+        suffix_array.push_back(0);
+    }
+
+    // 4. Use dir to create our suffix array
+    for (size_t i = 0; i < pattern_length - q_length+1; i++) {
+        uint32_t j = hash(pattern.substr(i, q_length));
+        dir[j]--;
+        suffix_array[dir[j]] = i;
     }
 }
 

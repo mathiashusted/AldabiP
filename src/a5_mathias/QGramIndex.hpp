@@ -84,7 +84,9 @@ public:
 
 private:
    // YOUR PRIVATE MEMBER FUNCTIONS and VARIABLES HERE
-  // std::string unhash(const std::string& hashed) const;
+
+  std::vector<uint32_t> suffix_array;
+  std::vector<uint32_t> dir;
 
   const std::string& pattern;
   const uint8_t q_length;
@@ -92,9 +94,6 @@ private:
   const uint8_t bit_shift_value = 2; // Valid for as long as there exists a k, so that 2^k = alphabet_length
 
   size_t pattern_length;
-  // uint32_t bitmap = 0;
-
-  std::vector<int> dir;
 
 };
 
