@@ -88,6 +88,7 @@ private:
   const uint8_t q_length;
   const uint8_t alphabet_length = 4; // Our alphabet will always consist of {A, C, G, T}
   const uint8_t bit_shift_value = 2; // Valid for as long as there exists a k, so that 2^k = alphabet_length
+  uint32_t mask;
   const std::string& pattern;
   std::vector<uint32_t> suffix_array;
   std::vector<uint32_t> dir;

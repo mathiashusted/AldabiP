@@ -1,11 +1,13 @@
 #include "QGramIndex.hpp"
 #include <iostream> // DEBUG
 #include "a5_util.hpp"
-
+// #include <bitset> // DEBUG
 #include <cmath>
 
 
 uint32_t QGramIndex::hash(const std::string& qgram) const {
+    if (qgram.size() != q_length)
+        std::invalid_argument("Invalid q-gram. Wrong length!");
     uint32_t hash_value = 0;
 
     for (const auto& i : qgram) {
@@ -20,38 +22,44 @@ uint32_t QGramIndex::hashNext(const uint32_t prev_hash, const char new_pos) cons
     uint32_t hash_value = prev_hash;
     hash_value <<= bit_shift_value;
     hash_value |= ordValue(new_pos);
-
+    
     // Last step: Delete the characters of the overlapping q-gram
-    uint32_t mask = ~0 << 2*q_length;
     // Now we'll "cut" the characters from the previous q-gram out
+    // std::cout << std::bitset<32>(hash_value) << " &\n" << std::bitset<32>(~mask) << " =\n" << std::bitset<32>(hash_value & ~mask) << "\n";
     return hash_value & ~mask;
 }
 
 QGramIndex::QGramIndex(const std::string& text, const uint8_t q) :  q_length(q), pattern(text) {
+    if (q_length < 1 || q_length > 13)
+        throw std::invalid_argument("Invalid q!");
+
     pattern_length = pattern.length();
+    mask = ~0 << 2*q_length; // Our bit mask for our hash function
 
     // Initialize the q-gram
     // Start by sorting using counting sort
     // 1. Initializiation phase
-
-
-    for (uint16_t i = 0; i < std::pow(alphabet_length, q_length); i++) {
+    for (size_t i = 0; i < std::pow(alphabet_length, q_length); i++) {
         dir.push_back(0);
     }
 
     // 2. Fetch occurences
-    for (size_t i = 0; i < pattern_length - q_length+1; i++) {
+    // We need to add the first occurence manually in order to use the rolling hash function
+    uint32_t previous_hash = hash(pattern.substr(0, q_length));
+    // std::cout << "Hash of " << pattern.substr(0, q_length) << ": " << previous_hash << "\n";
+    dir[previous_hash]++;
+    for (size_t i = 1; i < pattern_length - q_length+1; i++) {
         // j = hash of the q-gram at index i
-        uint32_t j = hash(pattern.substr(i, q_length));
-        std::cout << "Hash of " << pattern.substr(i, q_length) << ": " << j << "\n";
+        uint32_t j = hashNext(previous_hash, pattern[i+q_length-1]);
+        // std::cout << "Hash of " << pattern.substr(i, q_length) << ": " << j << "\n";
         dir[j]++;
+        previous_hash = j;
         // std::cout << pattern.substr(i, q_length) << ": " << dir[i] << "\n";
     }
 
     // 3. Create cumulative sum
     for (size_t i = 1; i < dir.size(); i++) {
         dir[i] += dir[i-1];
-        // std::cout << "dir[" << i << "]: " << dir[i] << "\n";
     }
 
     // 3.5 Initialize suffix array
@@ -61,11 +69,31 @@ QGramIndex::QGramIndex(const std::string& text, const uint8_t q) :  q_length(q),
     }
 
     // 4. Use dir to create our suffix array
-    for (size_t i = 0; i < pattern_length - q_length+1; i++) {
+    // Here we need to use our hash function in the same manner as in step 2
+    previous_hash = hash(pattern.substr(0, q_length));
+    dir[previous_hash]--;
+    suffix_array[dir[previous_hash]] = 0;
+    for (size_t i = 1; i < pattern_length - q_length+1; i++) {
         uint32_t j = hash(pattern.substr(i, q_length));
         dir[j]--;
         suffix_array[dir[j]] = i;
     }
+}
+
+std::vector<uint32_t> QGramIndex::getHits(const uint32_t h) const {
+    // Potential problem: We are excluding the last q-gram from being searched, because we would access an index out of bounds ("TTT...T")
+    if (h > std::pow(alphabet_length, q_length) - 2)
+        throw(std::invalid_argument("Invalid hash!"));
+    std::vector<uint32_t> output{};
+    
+    uint32_t num_occurences = dir[h+1] - dir[h];
+
+    for (uint32_t i = 0; i < num_occurences; i++) {
+        // std::cout << "Position in suffix array " << suffix_array[dir[h]+i] << "\n";
+        output.push_back(suffix_array[dir[h]+i]);
+    }
+
+    return output;
 }
 
 uint8_t QGramIndex::getQ() const {
