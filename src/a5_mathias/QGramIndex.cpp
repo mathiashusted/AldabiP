@@ -74,9 +74,10 @@ QGramIndex::QGramIndex(const std::string& text, const uint8_t q) :  q_length(q),
     dir[previous_hash]--;
     suffix_array[dir[previous_hash]] = 0;
     for (size_t i = 1; i < pattern_length - q_length+1; i++) {
-        uint32_t j = hash(pattern.substr(i, q_length));
+        uint32_t j = hashNext(previous_hash, pattern[i+q_length-1]);
         dir[j]--;
         suffix_array[dir[j]] = i;
+        previous_hash = j;
     }
 }
 
