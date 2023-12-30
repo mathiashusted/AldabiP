@@ -27,7 +27,7 @@ uint32_t QGramIndex::hashNext(const uint32_t prev_hash, const char new_pos) cons
     return hash_value & ~mask;
 }
 
-QGramIndex::QGramIndex(const std::string& text, const uint8_t q) : pattern(text), q_length(q) {
+QGramIndex::QGramIndex(const std::string& text, const uint8_t q) :  q_length(q), pattern(text) {
     pattern_length = pattern.length();
 
     // Initialize the q-gram
@@ -43,7 +43,7 @@ QGramIndex::QGramIndex(const std::string& text, const uint8_t q) : pattern(text)
     for (size_t i = 0; i < pattern_length - q_length+1; i++) {
         // j = hash of the q-gram at index i
         uint32_t j = hash(pattern.substr(i, q_length));
-        // std::cout << "Hash of " << pattern.substr(i, q_length) << ": " << j << "\n";
+        std::cout << "Hash of " << pattern.substr(i, q_length) << ": " << j << "\n";
         dir[j]++;
         // std::cout << pattern.substr(i, q_length) << ": " << dir[i] << "\n";
     }
@@ -51,7 +51,7 @@ QGramIndex::QGramIndex(const std::string& text, const uint8_t q) : pattern(text)
     // 3. Create cumulative sum
     for (size_t i = 1; i < dir.size(); i++) {
         dir[i] += dir[i-1];
-        std::cout << "dir[" << i << "]: " << dir[i] << "\n";
+        // std::cout << "dir[" << i << "]: " << dir[i] << "\n";
     }
 
     // 3.5 Initialize suffix array
