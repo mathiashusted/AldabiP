@@ -2,6 +2,8 @@
 
 #include <string>
 #include <vector>
+#include <unordered_map>
+#include <queue>
 #include <limits>
 
 /// A needle (at position #i, as passed into ACTrie's constructor) was found in the haystack (query) at position 'p'
@@ -36,6 +38,20 @@ public:
 
 private:
   size_t i_ = std::numeric_limits<size_t>::max();
+};
+
+
+class ACNode {
+public:
+    ACNode* parent_link;
+    ACNode* supply_link;
+    ACNode* output_link;
+    std::unordered_map<char, ACNode*> children;
+    std::vector<int> pattern_indices;
+    int depth;
+
+    // Constructor
+    ACNode(int depth = 0) : parent_link(nullptr), supply_link(nullptr), output_link(nullptr), depth(depth) {}
 };
 
 
@@ -78,8 +94,22 @@ public:
 private:
   // add your private functions and member variables here
   // ....
+  ACNode* root;
+
+  std::string haystack;
+  size_t haystack_pos;
+  ACNode* current_node;
+
+  std::vector<std::string> patterns;
+  std::vector<Hit> hits;
   
-  
+  void addPattern(const std::string& pattern, int patternIndex);
+
+  void buildTrie(const std::vector<std::string>& patterns);
+
+  void buildSupplyLinks();
+
+  void buildOutputLinks();
 };
 
 
