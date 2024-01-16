@@ -4,6 +4,16 @@
 #include <vector>
 #include <limits>
 
+struct ACNode {
+  size_t depth;
+  ACNode* suffix_link;
+  ACNode* output_link;
+  ACNode* parent_link;
+  bool output; // ?
+  std::vector<int> needle_indices;
+  std::vector<ACNode*> children;
+};
+
 /// A needle (at position #i, as passed into ACTrie's constructor) was found in the haystack (query) at position 'p'
 /// (all values are 0-based)
 /// Do NOT change this structure!
@@ -78,7 +88,7 @@ public:
 private:
   // add your private functions and member variables here
   // ....
-  
+  ACNode root;
   
 };
 
