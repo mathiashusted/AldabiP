@@ -43,15 +43,31 @@ private:
 
 class ACNode {
 public:
-    ACNode* parent_link;
-    ACNode* supply_link;
-    ACNode* output_link;
+    char symbol;
+    ACNode* parent_link;  // snake-case to avoid confusions
+    ACNode* supply_link;  // snake-case to avoid confusions
+    ACNode* output_link;  // snake-case to avoid confusions
     std::unordered_map<char, ACNode*> children;
-    std::vector<int> pattern_indices;
+    std::vector<int> patternIndices;
     int depth;
 
-    // Constructor
-    ACNode(int depth = 0) : parent_link(nullptr), supply_link(nullptr), output_link(nullptr), depth(depth) {}
+    // Default constructor
+    ACNode() {
+        this->symbol = '0';
+        this->parent_link = nullptr;
+        this->supply_link = nullptr;
+        this->output_link = nullptr;
+        this->depth = 0;
+    }
+
+    // Construtor with symbol, parent link and depth
+    ACNode(char symbol, ACNode* parent_link, int depth) {
+        this->symbol = symbol;
+        this->parent_link = parent_link;
+        this->supply_link = nullptr;
+        this->output_link = nullptr;
+        this->depth = depth;
+    }
 };
 
 
@@ -97,19 +113,20 @@ private:
   ACNode* root;
 
   std::string haystack;
-  size_t haystack_pos;
-  ACNode* current_node;
+  size_t haystackPos;
+  ACNode* currentNode;
 
-  std::vector<std::string> patterns;
+  std::vector<std::string> needles;
   std::vector<Hit> hits;
   
-  void addPattern(const std::string& pattern, int patternIndex);
+  void clear();
 
-  void buildTrie(const std::vector<std::string>& patterns);
+  void addNeedle(const std::string& needle, int patternIndex);
 
   void buildSupplyLinks();
 
   void buildOutputLinks();
+
 };
 
 

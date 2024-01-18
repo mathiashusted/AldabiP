@@ -10,24 +10,32 @@ int main(int argc, char** argv) {
 
     std::string query = argv[1];
     std::vector<std::string> patterns = std::vector<std::string>(argc - 2);
-    std::vector<Hit> hits;
-
-    ACTrie instance(patterns);
-    instance.setQuery(query);
-    std::string treeRepresetation = instance.getTree();
-    std::cout << "Tree representation: " << treeRepresetation << "\n";
-    instance.next(hits);
-
-    std::cout << "Hits: " << hits.size() << "\n";
-    for (Hit hit : hits) {
-        std::cout << hit.index << " " << hit.pos << "\n";
+    for (int i = 2; i < argc; i++) {
+        patterns[i - 2] = argv[i];
     }
 
-    instance.next(hits);
+    std::vector<Hit> hits;
 
-    std::cout << "Hits: " << hits.size() << "\n";
-    for (Hit hit : hits) {
-        std::cout << hit.index << " " << hit.pos << "\n";
+    std::cout << "Query: " << query << std::endl;
+    std::cout << "Patterns: ";
+    for (const auto& pattern : patterns) {
+        std::cout << pattern << " ";
+    }
+    std::cout << std::endl;
+
+    ACTrie trie(patterns);
+    std::cout << "Trie built" << std::endl;
+    std::string tree = trie.getTree();
+    std::cout << tree << std::endl;
+
+    trie.setQuery(query);
+
+    while (trie.next(hits)) {
+        std::cout << "Found hits: ";
+        for (const auto& hit : hits) {
+            std::cout << hit.pos << " ";
+        }
+        std::cout << std::endl;
     }
 
     return 0;
