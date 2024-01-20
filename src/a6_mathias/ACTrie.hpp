@@ -5,13 +5,21 @@
 #include <limits>
 
 struct ACNode {
-  size_t depth;
-  ACNode* suffix_link;
-  ACNode* output_link;
-  ACNode* parent_link;
+  // Root constructor (default)
+  ACNode() : symbol('0'), depth(0), supply_link(-1), output_link(-1), parent_link(-1),
+    output(false), needle_indices(std::vector<unsigned> {}), children(std::vector<unsigned> {}) {}
+
+  // Custom constructor (all other cases)
+  ACNode(char next_symbol, int next_parent_link, unsigned next_depth) : symbol(next_symbol), parent_link(next_parent_link), depth(next_depth) {}
+
+  char symbol;
+  unsigned depth;
+  int supply_link;
+  int output_link;
+  int parent_link;
   bool output; // ?
-  std::vector<int> needle_indices;
-  std::vector<ACNode*> children;
+  std::vector<unsigned> needle_indices; // Indices in pattern vector
+  std::vector<unsigned> children;
 };
 
 /// A needle (at position #i, as passed into ACTrie's constructor) was found in the haystack (query) at position 'p'
@@ -88,7 +96,17 @@ public:
 private:
   // add your private functions and member variables here
   // ....
-  ACNode root;
+  int root;
+  int current_node;
+  std::vector<ACNode> nodes;
+  std::vector<std::string> needles;
+  std::string haystack;
+
+  void clear();
+  void add_child(const std::string& needle);
+  void insert_child(char to_insert);
+  std::string generate_tree(int starting_node, bool called) const;
+  
   
 };
 
