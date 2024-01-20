@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <limits>
+#include <queue>
 
 struct ACNode {
   // Root constructor (default)
@@ -106,6 +107,8 @@ private:
   void add_child(const std::string& needle);
   void insert_child(char to_insert);
   std::string generate_tree(int starting_node, bool called) const;
+  void bfs();
+  void create_supply_link();
   
   
 };
