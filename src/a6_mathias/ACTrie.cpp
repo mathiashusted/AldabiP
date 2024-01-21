@@ -54,9 +54,9 @@ void ACTrie::create_supply_link() {
                 q.push(adjacent);
             }
         }
-        std::cout << "Status: " << nodes[next].symbol << "\n";
+        // std::cout << "Status: " << nodes[next].symbol << "\n";
         if (next == 0 || this->nodes[next].parent_link == 0) {
-            std::cout << "Set to 0\n";
+            // std::cout << "Set to 0\n";
             this->nodes[next].supply_link = 0;
         }
         else {
@@ -127,9 +127,19 @@ std::string ACTrie::generate_tree(int starting_node, bool called) const {
     return output;
 }
 
+
+
 void ACTrie::clear() {
     this->nodes.clear();
     this->haystack = "";
     this->current_node = 0;
     this->needles = std::vector<std::string> {};
+}
+
+bool ACTrie::next(std::vector<Hit>& hits) {
+    return false;
+}
+
+void ACTrie::setQuery(const std::string& haystack) {
+    this->haystack = haystack;
 }
