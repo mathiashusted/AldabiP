@@ -8,20 +8,22 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v3
 
-    - name: configure
-      run: ./configure
+    - name: Find directories starting with 'aufgabe'
+      id: find-dirs
+      run: |
+        echo "AUFAGBE_DIRS=$(find . -type d -name 'aufgabe*' | sed 's|./||' | xargs)" >> $GITHUB_ENV
 
-    - name: Install dependencies
-      run: make
+    # - name: Install dependencies (if any)
+    #   run: sudo apt-get update && sudo apt-get install -y make
 
-    - name: Run check
-      run: make check
-
-    - name: Run distcheck
-      run: make distcheck
+    - name: Compile projects
+      run: |
+        for dir in $AUFAGBE_DIRS; do
+          echo "Compiling in $dir"
+          (cd $dir && make)
+        done
