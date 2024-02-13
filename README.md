@@ -33,9 +33,9 @@ In the first, we will acquire a theoretical understanding of the algorithms and 
 - Suffix arrays
 - Needleman-Wunsch algorithm (+ Smith-Waterman)
 - BLAST (Partially)
-...
-
-(More topics will be added as the course progresses)
+- Q-Gram-Index (Implementation using Counting Sort for SA Construction)
+- Aho-Corasick algorithm
+- Pushdown Automata (for hairpin detection)
 
 
 ## Implementations
@@ -43,7 +43,7 @@ Each final assignment corresponding to a task is placed in a folder named `aufga
 
 The real development for each of these assignments takes place under `src/*` directory. For example, the code for the first task would be under `src/a1_dzima/*` and `src/a1_mathias/*`. Additionally, you will also see the templates we were given. All of the tasks are numbered chronologically and will get progressively more complex.
 
-As a general rule, each program fundamentally consists of 3 main files.
+As a general rule, each program fundamentally consists of minimum 3 files:
 - aufgabeX.h
 - aufgabeX.cpp
 - aufgabeX_main.cpp
@@ -58,6 +58,11 @@ g++ -std=c++17 -Wall -pedantic -O3 aufgabe1.cpp aufgabe1_test.cpp -o aufgabe1_te
 ```
 This command will compile the test file using the C++17 standard, apply all warnings (`-Wall`), enforce strict compliance to the C++ standard (`-pedantic`), and optimize the code (`-O3`). It will then generate an executable file named `aufgabe1_test`.
 
+
+Alternatively, you can use the provided `Makefile` to compile the test file. To do so, navigate to the corresponding folder and execute the following command:
+```bash
+make
+```
 
 
 ## Installation
