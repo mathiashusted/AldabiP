@@ -18,8 +18,8 @@ jobs:
       run: |
         echo "AUFAGBE_DIRS=$(find . -type d -name 'aufgabe*' | sed 's|./||' | xargs)" >> $GITHUB_ENV
 
-    # - name: Install dependencies (if any)
-    #   run: sudo apt-get update && sudo apt-get install -y make
+    - name: Install dependencies (if any)
+      run: sudo apt-get update && sudo apt-get install -y make libomp-dev
 
     - name: Compile projects
       run: |
