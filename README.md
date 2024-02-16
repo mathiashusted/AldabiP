@@ -1,6 +1,5 @@
 <h1 align="center">AlDaBi Praktikum</h1>
 <p align="center"><strong>Algorithms and Data Structures for Bioinformatics</strong></p>
-[![CI](https://github.com/mathiashusted/AldabiP/actions/workflows/makefile.yml/badge.svg)](https://github.com/mathiashusted/AldabiP/actions/workflows/makefile.yml)
 
 ![header](images/header.png)
 
@@ -76,6 +75,8 @@ After cloning, navigate to the project's root directory and follow the instructi
 
 ## Continuous Integration
 This repository utilizes GitHub Actions for Continuous Integration (CI). The CI pipeline automatically triggers every time a new commit is pushed to the repository. It compiles and runs the tests as specified, ensuring that each change to the codebase maintains the integrity of the algorithms implemented.
+
+[![CI](https://github.com/mathiashusted/AldabiP/actions/workflows/makefile.yml/badge.svg)](https://github.com/mathiashusted/AldabiP/actions/workflows/makefile.yml)
 
 
 ## Contributors
