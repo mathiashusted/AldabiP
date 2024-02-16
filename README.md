@@ -1,5 +1,6 @@
 <h1 align="center">AlDaBi Praktikum</h1>
 <p align="center"><strong>Algorithms and Data Structures for Bioinformatics</strong></p>
+[![CI](https://github.com/mathiashusted/AldabiP/actions/workflows/makefile.yml/badge.svg)](https://github.com/mathiashusted/AldabiP/actions/workflows/makefile.yml)
 
 ![header](images/header.png)
 
